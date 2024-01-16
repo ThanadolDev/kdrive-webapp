@@ -10,10 +10,12 @@ import { CiEdit } from "react-icons/ci";
 import { MdDeleteForever } from "react-icons/md";
 import { useStateContext } from "../contexts/ContextProvider";
 import axios from "axios";
-import { Document, Page } from 'react-pdf';
+import { Document, Page } from "react-pdf";
 import { json } from "react-router-dom";
+const pdfjs = require("pdfjs-dist");
+pdfjs.GlobalWorkerOptions.workerSrc = require("pdfjs-dist/build/pdf.worker.entry.js");
 
-export const MainDrive = ({fetchstate}) => {
+export const MainDrive = ({ fetchstate }) => {
   const {
     activeMenu,
     isModalOpen,
@@ -37,7 +39,9 @@ export const MainDrive = ({fetchstate}) => {
   } = useStateContext();
   const [Filelist, setFileList] = useState();
   const [clickedfile, setclickedfile] = useState();
-  const [fileName, setFileName] = useState('');
+  const [fileName, setFileName] = useState("");
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
 
   async function fetchData() {
     try {
@@ -55,6 +59,10 @@ export const MainDrive = ({fetchstate}) => {
     fetchData();
   }, []);
 
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
+  };
+
   useEffect(() => {
     fetchData();
   }, [fetchstate]);
@@ -67,23 +75,28 @@ export const MainDrive = ({fetchstate}) => {
     openrightclickModal();
   };
 
-  async function deletefile(fileId){
-    try{
-    const res = await axios.delete(`http://localhost:5000/deletefile/${fileId}`)
-    console.log(res)
-    closedeletemodal()
-    fetchData()
-    }catch(e){
-      console.log(e)
+  async function deletefile(fileId) {
+    try {
+      const res = await axios.delete(
+        `http://localhost:5000/deletefile/${fileId}`
+      );
+      console.log(res);
+      closedeletemodal();
+      fetchData();
+    } catch (e) {
+      console.log(e);
     }
   }
 
-  async function editfilename(fileId){
+  async function editfilename(fileId) {
     try {
-      const res = await axios.put(`http://localhost:5000/editfilename/${fileId}`, { input: fileName });
+      const res = await axios.put(
+        `http://localhost:5000/editfilename/${fileId}`,
+        { input: fileName }
+      );
       console.log(res);
       closeeditmodal();
-      fetchData()
+      fetchData();
     } catch (e) {
       console.log(e);
     }
@@ -99,7 +112,10 @@ export const MainDrive = ({fetchstate}) => {
       const blob = new Blob([response.data], {
         type: response.headers["content-type"],
       });
-      setSelectedFile({blob: URL.createObjectURL(blob), fileExtension: fileExtension});
+      setSelectedFile({
+        blob: URL.createObjectURL(blob),
+        fileExtension: fileExtension,
+      });
     } catch (e) {
       console.log(e);
     }
@@ -107,22 +123,34 @@ export const MainDrive = ({fetchstate}) => {
 
   const displayFile = () => {
     switch (selectedFile.fileExtension) {
-      case 'image/webp':
-      case 'image/png':
-      case 'image/jpg':
-      case 'image/jpeg':
+      case "image/webp":
+      case "image/png":
+      case "image/jpg":
+      case "image/jpeg":
         return <img src={selectedFile.blob} alt="Selected" />;
-      case 'application/pdf':
+      case "application/pdf":
         return (
-          <Document file={selectedFile.blob}>
-            <Page />
+          <Document
+            file={selectedFile.blob}
+            renderAnnotationLayer={false}
+            renderTextLayer={false}
+            onLoadSuccess={onDocumentLoadSuccess}
+          >
+            {Array.from(new Array(numPages), (el, index) => (
+              <Page
+                key={`page_${index + 1}`}
+                pageIndex={index}
+                renderAnnotationLayer={false}
+                renderTextLayer={false}
+              />
+            ))}
           </Document>
         );
       default:
         return <p>Unsupported file type</p>;
     }
   };
-  
+
   return (
     <>
       <div className="m-4 bg-white rounded-md h-[91vh] drop-shadow-sm">
@@ -150,10 +178,12 @@ export const MainDrive = ({fetchstate}) => {
                 <div>
                   <Box>
                     <div
-                      onClick={() => openModalFile(prev.fileId, prev.fileExtension)}
+                      onClick={() =>
+                        openModalFile(prev.fileId, prev.fileExtension)
+                      }
                       onContextMenu={(e) => {
                         handleContextMenu(e);
-                        setclickedfile(prev.fileId)
+                        setclickedfile(prev.fileId);
                         console.log("test right click");
                       }}
                       className=" bg-grey border-slate-400 border-2 w-52 items-center flex p-4 rounded-xl gap-2 cursor-pointer hover:drop-shadow-lg hover:bg-gray-200"
@@ -192,7 +222,7 @@ export const MainDrive = ({fetchstate}) => {
           </div>
         </div>
         {/* <img className="" src={selectedFile} /> */}
-        
+
         {selectedFile && displayFile()}
       </Modals>
 
@@ -246,7 +276,7 @@ export const MainDrive = ({fetchstate}) => {
         </div>
       </Modals>
       <Modals isOpen={deletemodal} onClose={closedeletemodal}>
-      <div className="flex-row-reverse flex">
+        <div className="flex-row-reverse flex">
           <div
             onClick={closedeletemodal}
             className="text-xl font-bold mb-2 hover:bg-gray-400 rounded-xl p-2"
@@ -257,7 +287,6 @@ export const MainDrive = ({fetchstate}) => {
         <div className="font-bold  mb-2">This will be permanently deleted</div>
         <div className="font-bold  mb-4">Continue?</div>
         <div className="flex-row-reverse flex gap-4">
-        
           <div
             onClick={closedeletemodal}
             className=" flex items-center mb-2 hover:bg-blue-500 rounded-lg cursor-pointer hover:drop-shadow-lg gap-2 bg-blue-400 p-2"
