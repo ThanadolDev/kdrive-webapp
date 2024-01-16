@@ -10,14 +10,20 @@ import { Button,Chartsheader,Footer,Header,Navbar,Sidebar,UserProfile,Modals } f
 
 import { MainDrive } from "./pages";
 import { useStateContext} from './contexts/ContextProvider'
-import { KanbanComponent, ColumnsDirective, ColumnDirective } from "@syncfusion/ej2-react-kanban";
+
 function App() {
   const {activeMenu} = useStateContext();
+  const [fetchstate, setfetchstate] = useState(false)
+
+  function fetchheader (){
+    setfetchstate(!fetchstate)
+  }
+
   return (
     <BrowserRouter>
       <div className="flex relative dark:bg-main-dark-db">
         <div className="fixed right-4 bottom-4" style={{ zIndex: "1000" }}>
-          <TooltipComponent content="Settings" position="Top">
+          {/* <TooltipComponent content="Settings" position="Top">
             <button
               type="button"
               className="text-3xl p-3 hover:drop-shadow-xl hover:bd-light-gray text-white "
@@ -28,11 +34,11 @@ function App() {
             >
               <IoMdAdd />
             </button>
-          </TooltipComponent>
+          </TooltipComponent> */}
         </div>
         {activeMenu ? (
           <div className="w-72 fixed sidebar dark:bf-secondary-dark-bg bg-white">
-             <Sidebar/>
+             <Sidebar fetchheader={fetchheader}/>
           </div>
         ) : (
           <div className="w-0 dark:bg-secondary-dark-bg"><Sidebar/></div>
@@ -51,7 +57,7 @@ function App() {
           
           <div>
             <Routes>
-              <Route path="/" element={<MainDrive/>} />
+              <Route path="/" element={<MainDrive fetchstate={fetchstate}/>} />
             </Routes>
           </div>
         </div>
