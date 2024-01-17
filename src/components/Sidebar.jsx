@@ -10,7 +10,7 @@ import { ImOnedrive } from "react-icons/im";
 import { IoAddOutline } from "react-icons/io5";
 import axios from "axios";
 
-export const Sidebar = ({fetchheader}) => {
+export const Sidebar = ({ fetchheader }) => {
   const {
     activeMenu,
     setActiveMenu,
@@ -33,21 +33,24 @@ export const Sidebar = ({fetchheader}) => {
             const percentCompleted = Math.round(
               (progressEvent.loaded * 100) / progressEvent.total
             );
+            console.log(percentCompleted);
             setUploadProgress(percentCompleted);
           },
         }
       );
-
+      setUploadProgress(0);
       const FormDataDetail2 = {
         Folder: null,
         data: response.data[0],
         EMP_ID: localStorage.getItem("EMP_ID"),
       };
       await axios.post("http://localhost:5000/uploadfiles", FormDataDetail2);
-      fetchheader()
+      fetchheader();
       console.log(response.data);
     } catch (error) {
       console.error("Error uploading file: ", error);
+      window.alert(error);
+      setUploadProgress(0);
     }
   };
 
@@ -59,7 +62,7 @@ export const Sidebar = ({fetchheader}) => {
     <div className=" h-screen absolute w-full md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10 bg-white drop-shadow-sm">
       {activeMenu && (
         <>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center ml-2">
             <Link
               to="/"
               // onClick={() => {
@@ -68,7 +71,7 @@ export const Sidebar = ({fetchheader}) => {
               className="items-center gap-3 ml-3 mt-4 flex text-xl font-extrabold tracking-tight dark:text-white text-slate-900"
             >
               {" "}
-              <ImOnedrive /> <span>KDrive</span>
+              <ImOnedrive className="text-blue-700" /> <span>KDrive</span>
             </Link>
             <TooltipComponent content="Menu" position="ButtomCenter">
               <button
@@ -84,21 +87,35 @@ export const Sidebar = ({fetchheader}) => {
           </div>
           <div className="mt-10">
             <div className=" m-3 mt-4 uppercase">
-              <div className="flex cursor-pointer hover:drop-shadow-xl item-center gap-2 pl-4 pt-3 pb-2.5 rounded-lg bg-white text-md m-2 drop-shadow-md w-[140px]">
-                <input
-                  type="file"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  id="fileInput"
-                />
-                <label
-                  htmlFor="fileInput"
-                  className="flex items-center w-full gap-5"
-                >
-                  <IoAddOutline className="text-xl" />
-                  <div>Add file</div>
-                </label>
-              </div>
+              {uploadProgress !== 100 ? (
+                <div className="flex cursor-pointer hover:drop-shadow-xl hover:bg-gray-200 item-center gap-2 pl-4 pt-3 pb-2.5 rounded-lg bg-white text-md m-2 mb-4 drop-shadow-md w-[140px]">
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    className="hidden cursor-pointer"
+                    id="fileInput"
+                  />
+                  <label
+                    htmlFor="fileInput"
+                    className="flex items-center cursor-pointer w-full gap-5"
+                  >
+                    <IoAddOutline className="text-xl text-blue-700" />
+                    <div>Add file</div>
+                  </label>
+                </div>
+              ) : (
+                <div className="flex cursor-pointer hover:drop-shadow-xl hover:bg-gray-200 item-center gap-2 pl-4 pt-3 pb-2.5 rounded-lg bg-white text-md m-2 drop-shadow-md w-[140px]">
+                  <div
+                    class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                    role="status"
+                  >
+                    <span class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                      Loading...
+                    </span>
+                  </div>
+                  <div>Loading</div>
+                </div>
+              )}
               <NavLink
                 to={`/`}
                 key={"Drive"}
@@ -109,7 +126,7 @@ export const Sidebar = ({fetchheader}) => {
                   isActive ? activeLink : normalLink
                 }
               >
-                <SiProtondrive className="mt-0.5 text-xl" />
+                <SiProtondrive className="mt-0.5 text-xl text-blue-700" />
                 <span className="capitalize ">Drive</span>
               </NavLink>
             </div>

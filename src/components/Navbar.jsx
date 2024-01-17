@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import { AioutlineMenu } from "react-icons/ai";
 import { FiShoppingCart } from "react-icons/fi";
 import { BsChatLeft } from "react-icons/ri";
@@ -7,6 +7,7 @@ import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { useStateContext } from "../contexts/ContextProvider";
 import { AiOutlineMenu } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
+import { IoIosLogOut } from "react-icons/io";
 
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
@@ -26,15 +27,32 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
 );
 
 export const Navbar = () => {
-  const { activeMenu, setActiveMenu,setScreenSize,screenSize } = useStateContext();
+  const {
+    activeMenu,
+    setActiveMenu,
+    setScreenSize,
+    screenSize,
+    openrightclickModal,
+    setContextMenuPosition,
+    rightclickmodal,
+    contextMenuPosition,
+  } = useStateContext();
+  const username =
+    localStorage.getItem("EMP_FNAME") + localStorage.getItem("EMP_LNAME");
+  const empid = localStorage.getItem("EMP_ID");
+  const handleContextMenu = (event) => {
+    localStorage.removeItem("EMP_ID");
+    window.location.reload();
+  };
+
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     handleResize();
 
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -52,13 +70,19 @@ export const Navbar = () => {
         color="blue"
         icon={<AiOutlineMenu />}
       ></NavButton>
-      <div className="flex">
-        <NavButton
-          // title="Menu"
-          // customFunc={() => setActiveMenu((preActiveMenu) => !preActiveMenu)}
-          color="blue"
-          icon={<CgProfile />}
-        ></NavButton>
+
+      <div
+        onClick={(e) => handleContextMenu(e)}
+        className="flex  hover:bg-gray-100 gap-2 rounded-xl p-2 cursor-pointer items-center"
+      >
+        <img
+          src={`https://api.nitisakc.dev/avatar/${empid}`}
+          alt=""
+
+        />
+        <div>{username}</div>
+        <IoIosLogOut className="text-xl text-blue-700 font-bold" />
+        <div className="font-bold text-blue-700">Logout</div>
       </div>
     </div>
   );

@@ -1,15 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { ContextProvider } from './contexts/ContextProvider';
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { ContextProvider } from "./contexts/ContextProvider";
+import LoginPage from "./loginpage";
+const root = ReactDOM.createRoot(document.getElementById("root"));
+const EMP_ID = localStorage.getItem("EMP_ID");
 root.render(
   <ContextProvider>
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    {EMP_ID ? <App />  : <LoginPage />}
   </ContextProvider>
 );
 

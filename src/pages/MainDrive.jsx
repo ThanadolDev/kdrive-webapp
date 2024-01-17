@@ -36,6 +36,7 @@ export const MainDrive = ({ fetchstate }) => {
     closeeditmodal,
     opendeleteModal,
     closedeletemodal,
+    
   } = useStateContext();
   const [Filelist, setFileList] = useState();
   const [clickedfile, setclickedfile] = useState();
@@ -89,6 +90,11 @@ export const MainDrive = ({ fetchstate }) => {
   }
 
   async function editfilename(fileId) {
+    if (!fileName.trim()) {
+      console.log("File name cannot be empty");
+      return; 
+  }
+
     try {
       const res = await axios.put(
         `http://localhost:5000/editfilename/${fileId}`,
@@ -127,6 +133,7 @@ export const MainDrive = ({ fetchstate }) => {
       case "image/png":
       case "image/jpg":
       case "image/jpeg":
+      case "image/gif":
         return <img src={selectedFile.blob} alt="Selected" />;
       case "application/pdf":
         return (
@@ -146,6 +153,10 @@ export const MainDrive = ({ fetchstate }) => {
             ))}
           </Document>
         );
+      case "video/mp4":
+      case "video/mov":
+      case "video/webm":
+        return <video controls className="w-full" src={selectedFile.blob} />;
       default:
         return <p>Unsupported file type</p>;
     }
@@ -153,7 +164,7 @@ export const MainDrive = ({ fetchstate }) => {
 
   return (
     <>
-      <div className="m-4 bg-white rounded-md h-[91vh] drop-shadow-sm">
+      <div className="m-4 bg-white rounded-md overflow-auto  h-[91vh] drop-shadow-sm">
         <div className="p-8 ">
           <div className="mb-8">
             <Breadcrumb />
@@ -186,10 +197,10 @@ export const MainDrive = ({ fetchstate }) => {
                         setclickedfile(prev.fileId);
                         console.log("test right click");
                       }}
-                      className=" bg-grey border-slate-400 border-2 w-52 items-center flex p-4 rounded-xl gap-2 cursor-pointer hover:drop-shadow-lg hover:bg-gray-200"
+                      className=" bg-grey border-slate-400 border-2 max-h-[60px] w-52 items-center flex p-4 rounded-xl  cursor-pointer hover:drop-shadow-lg hover:bg-gray-200"
                       style={{ position: "relative" }}
                     >
-                      <FaFile className="" />
+                      <FaFile className="mr-2" />
                       <div
                         className="overflow-hidden text-ellipsis"
                         style={{ textOverflow: "ellipsis" }}
@@ -222,8 +233,7 @@ export const MainDrive = ({ fetchstate }) => {
           </div>
         </div>
         {/* <img className="" src={selectedFile} /> */}
-
-        {selectedFile && displayFile()}
+        <div>{selectedFile && displayFile()}</div>
       </Modals>
 
       <Rightclickmodal
