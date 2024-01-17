@@ -2,13 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Box } from "grommet";
 import { CiFolderOn } from "react-icons/ci";
 import { FaFile } from "react-icons/fa";
-import { Breadcrumb, Rightclickmodal } from "../components";
+import {
+  Breadcrumb,
+  Rightclickmodal,
+  Checkfileicon,
+  Displayfile,
+} from "../components";
 import { Modals } from "../components";
 import { IoMdClose } from "react-icons/io";
 import { MdSaveAlt } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteForever } from "react-icons/md";
 import { useStateContext } from "../contexts/ContextProvider";
+import { FaDownload } from "react-icons/fa";
 import axios from "axios";
 import { Document, Page } from "react-pdf";
 import { json } from "react-router-dom";
@@ -36,17 +42,18 @@ export const MainDrive = ({ fetchstate }) => {
     closeeditmodal,
     opendeleteModal,
     closedeletemodal,
-    
   } = useStateContext();
+
   const [Filelist, setFileList] = useState();
   const [clickedfile, setclickedfile] = useState();
   const [fileName, setFileName] = useState("");
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
 
   async function fetchData() {
     try {
-      const fileResult = await axios.get("http://localhost:5000/getrootfiles");
+      const urid = localStorage.getItem("EMP_ID");
+      const fileResult = await axios.get(
+        "http://localhost:5000/getrootfiles/" + urid
+      );
       const combinedData = {
         files: fileResult.data,
       };
@@ -56,13 +63,33 @@ export const MainDrive = ({ fetchstate }) => {
       console.error("Error fetching data:", error);
     }
   }
-  useEffect(() => {
-    fetchData();
-  }, []);
 
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
-  };
+  async function downloadfile() {
+    try {
+      const downloadLink = document.createElement("a");
+      downloadLink.href = `http://localhost:7870/downloadfile/${clickedfile}`;
+
+      const newWindow = window.open("", "_blank");
+      newWindow.document.write(
+        "<html><head><title>Opening Link</title></head><body>Downloading"
+      );
+
+      newWindow.location.href = downloadLink.href;
+
+      setTimeout(() => {
+        newWindow.close();
+      }, 500);
+
+      newWindow.document.write("</body></html>");
+      newWindow.document.close();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
   useEffect(() => {
     fetchData();
@@ -92,8 +119,8 @@ export const MainDrive = ({ fetchstate }) => {
   async function editfilename(fileId) {
     if (!fileName.trim()) {
       console.log("File name cannot be empty");
-      return; 
-  }
+      return;
+    }
 
     try {
       const res = await axios.put(
@@ -108,7 +135,7 @@ export const MainDrive = ({ fetchstate }) => {
     }
   }
 
-  async function openModalFile(fileId, fileExtension) {
+  async function openModalFile(fileId, fileExtension, fileName) {
     openModal();
     try {
       const response = await axios.get(
@@ -121,67 +148,20 @@ export const MainDrive = ({ fetchstate }) => {
       setSelectedFile({
         blob: URL.createObjectURL(blob),
         fileExtension: fileExtension,
+        fileName: fileName,
       });
     } catch (e) {
       console.log(e);
     }
   }
 
-  const displayFile = () => {
-    switch (selectedFile.fileExtension) {
-      case "image/webp":
-      case "image/png":
-      case "image/jpg":
-      case "image/jpeg":
-      case "image/gif":
-        return <img src={selectedFile.blob} alt="Selected" />;
-      case "application/pdf":
-        return (
-          <Document
-            file={selectedFile.blob}
-            renderAnnotationLayer={false}
-            renderTextLayer={false}
-            onLoadSuccess={onDocumentLoadSuccess}
-          >
-            {Array.from(new Array(numPages), (el, index) => (
-              <Page
-                key={`page_${index + 1}`}
-                pageIndex={index}
-                renderAnnotationLayer={false}
-                renderTextLayer={false}
-              />
-            ))}
-          </Document>
-        );
-      case "video/mp4":
-      case "video/mov":
-      case "video/webm":
-        return <video controls className="w-full" src={selectedFile.blob} />;
-      default:
-        return <p>Unsupported file type</p>;
-    }
-  };
-
   return (
     <>
       <div className="m-4 bg-white rounded-md overflow-auto  h-[91vh] drop-shadow-sm">
-        <div className="p-8 ">
+        <div className="p-8">
           <div className="mb-8">
             <Breadcrumb />
           </div>
-          {/* <Box
-            flex={true}
-            wrap={true}
-            direction="row"
-            className="w-full gap-5 mb-4"
-          >
-            <Box>
-              <div className="text-xl bg-grey border-slate-200 border-2 w-60 items-center flex p-6 rounded-xl gap-5 cursor-pointer hover:drop-shadow-lg hover:bg-gray-200">
-                <CiFolderOn />
-                <div className="text-ellipsis">test</div>
-              </div>
-            </Box>
-          </Box> */}
 
           <Box flex={true} wrap={true} direction="row" className="w-full gap-5">
             {Filelist &&
@@ -189,18 +169,25 @@ export const MainDrive = ({ fetchstate }) => {
                 <div>
                   <Box>
                     <div
-                      onClick={() =>
-                        openModalFile(prev.fileId, prev.fileExtension)
-                      }
+                      onClick={() => {
+                        setclickedfile(prev.fileId);
+                        openModalFile(
+                          prev.fileId,
+                          prev.fileExtension,
+                          prev.fileName
+                        );
+                      }}
                       onContextMenu={(e) => {
                         handleContextMenu(e);
                         setclickedfile(prev.fileId);
-                        console.log("test right click");
                       }}
                       className=" bg-grey border-slate-400 border-2 max-h-[60px] w-52 items-center flex p-4 rounded-xl  cursor-pointer hover:drop-shadow-lg hover:bg-gray-200"
                       style={{ position: "relative" }}
                     >
-                      <FaFile className="mr-2" />
+                      {/* <FaFile className="mr-2" /> */}
+                      <div className="mr-2 text-xl">
+                        <Checkfileicon fileExtension={prev.fileExtension} />
+                      </div>
                       <div
                         className="overflow-hidden text-ellipsis"
                         style={{ textOverflow: "ellipsis" }}
@@ -211,29 +198,44 @@ export const MainDrive = ({ fetchstate }) => {
                   </Box>
                 </div>
               ))}
-            {/* <Box>
-              <div
-                onClick={() => openModal()}
-                className="text-xl bg-grey border-slate-400 border-2 w-52 items-center flex p-4 rounded-xl gap-5 cursor-pointer hover:drop-shadow-lg hover:bg-gray-200"
-              >
-                <FaFile />
-                <div className="text-ellipsis">test.png</div>
-              </div>
-            </Box> */}
           </Box>
         </div>
       </div>
       <Modals isOpen={isModalOpen} onClose={closeModal}>
-        <div className="flex-row-reverse flex">
+        <div className="flex-row-reverse flex ">
           <div
             onClick={closeModal}
-            className="text-xl font-bold mb-4 hover:bg-gray-400 rounded-xl p-2"
+            className="text-xl font-bold cursor-pointer mb-4 hover:bg-gray-400 rounded-xl p-2"
           >
             <IoMdClose className="text-xl" />
           </div>
+          <div
+            onClick={() => downloadfile()}
+            className="text-xl font-bold mb-4 cursor-pointer hover:bg-gray-400 rounded-xl p-2 mr-2"
+          >
+            <FaDownload className="text-xl" />
+          </div>
         </div>
-        {/* <img className="" src={selectedFile} /> */}
-        <div>{selectedFile && displayFile()}</div>
+        {selectedFile && <div className="font-bold text-lg">{selectedFile.fileName}</div>}
+        <div>
+          {selectedFile ? (
+            <Displayfile selectedFile={selectedFile} />
+          ) : (
+            <div role="status" class="max-w-sm animate-pulse">
+              <div class="flex items-center justify-center w-full h-48 bg-gray-300 rounded sm:w-96 dark:bg-gray-700">
+                <svg
+                  class="w-10 h-10 text-gray-200 dark:text-gray-600"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 20 18"
+                >
+                  <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z" />
+                </svg>
+              </div>
+            </div>
+          )}
+        </div>
       </Modals>
 
       <Rightclickmodal
@@ -256,7 +258,15 @@ export const MainDrive = ({ fetchstate }) => {
           <MdDeleteForever className="text-xl" />
           <div> Delete File</div>
         </div>
+        <div
+          onClick={() => downloadfile()}
+          className="hover:bg-gray-400 p-2 rounded-md flex gap-4"
+        >
+          <FaDownload className="text-xl" />
+          <div>Download file</div>
+        </div>
       </Rightclickmodal>
+
       <Modals isOpen={editnamemodal} onClose={closeeditmodal}>
         <div className="flex-row-reverse flex">
           <div
@@ -285,6 +295,7 @@ export const MainDrive = ({ fetchstate }) => {
           </div>
         </div>
       </Modals>
+
       <Modals isOpen={deletemodal} onClose={closedeletemodal}>
         <div className="flex-row-reverse flex">
           <div

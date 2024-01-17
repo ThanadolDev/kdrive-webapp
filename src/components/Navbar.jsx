@@ -78,7 +78,6 @@ export const Navbar = () => {
         <img
           src={`https://api.nitisakc.dev/avatar/${empid}`}
           alt=""
-
         />
         <div>{username}</div>
         <IoIosLogOut className="text-xl text-blue-700 font-bold" />
