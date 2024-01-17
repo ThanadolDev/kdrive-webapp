@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Box } from "grommet";
-import { CiFolderOn } from "react-icons/ci";
-import { FaFile } from "react-icons/fa";
 import {
   Breadcrumb,
   Rightclickmodal,
@@ -16,10 +14,13 @@ import { MdDeleteForever } from "react-icons/md";
 import { useStateContext } from "../contexts/ContextProvider";
 import { FaDownload } from "react-icons/fa";
 import axios from "axios";
-import { Document, Page } from "react-pdf";
-import { json } from "react-router-dom";
+import { useDropzone } from "react-dropzone";
+import { IoFileTrayOutline } from "react-icons/io5";
 const pdfjs = require("pdfjs-dist");
 pdfjs.GlobalWorkerOptions.workerSrc = require("pdfjs-dist/build/pdf.worker.entry.js");
+
+const pathurl = `http://localhost`;
+// const pathurl = `http://192.168.55.37`;
 
 export const MainDrive = ({ fetchstate }) => {
   const {
@@ -48,11 +49,42 @@ export const MainDrive = ({ fetchstate }) => {
   const [clickedfile, setclickedfile] = useState();
   const [fileName, setFileName] = useState("");
 
+  const onDrop = async (acceptedFiles) => {
+
+    const formData = new FormData();
+    acceptedFiles.forEach((file) => {
+      console.log(file)
+      formData.append('upload', file);
+    });
+
+    try {
+      const response = await axios.post(
+        `${pathurl}:7870/upload`,
+        formData
+      );
+      const FormDataDetail2 = {
+        Folder: null,
+        data: response.data[0],
+        EMP_ID: localStorage.getItem("EMP_ID"),
+      };
+      console.log(response.data)
+      await axios.post(`${pathurl}:7871/uploadfiles`, FormDataDetail2);
+      fetchData()
+    } catch (error) {
+      console.error("Error uploading file: ", error);
+      window.alert(error);
+    }
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    noClick: true,
+  });
   async function fetchData() {
     try {
       const urid = localStorage.getItem("EMP_ID");
       const fileResult = await axios.get(
-        "http://localhost:5000/getrootfiles/" + urid
+        `${pathurl}:7871/getrootfiles/` + urid
       );
       const combinedData = {
         files: fileResult.data,
@@ -67,7 +99,7 @@ export const MainDrive = ({ fetchstate }) => {
   async function downloadfile() {
     try {
       const downloadLink = document.createElement("a");
-      downloadLink.href = `http://localhost:7870/downloadfile/${clickedfile}`;
+      downloadLink.href = `${pathurl}:7870/downloadfile/${clickedfile}`;
 
       const newWindow = window.open("", "_blank");
       newWindow.document.write(
@@ -105,9 +137,7 @@ export const MainDrive = ({ fetchstate }) => {
 
   async function deletefile(fileId) {
     try {
-      const res = await axios.delete(
-        `http://localhost:5000/deletefile/${fileId}`
-      );
+      const res = await axios.delete(`${pathurl}:7871/deletefile/${fileId}`);
       console.log(res);
       closedeletemodal();
       fetchData();
@@ -123,10 +153,9 @@ export const MainDrive = ({ fetchstate }) => {
     }
 
     try {
-      const res = await axios.put(
-        `http://localhost:5000/editfilename/${fileId}`,
-        { input: fileName }
-      );
+      const res = await axios.put(`${pathurl}:7871/editfilename/${fileId}`, {
+        input: fileName,
+      });
       console.log(res);
       closeeditmodal();
       fetchData();
@@ -139,7 +168,7 @@ export const MainDrive = ({ fetchstate }) => {
     openModal();
     try {
       const response = await axios.get(
-        `http://localhost:7870/displayfile/${fileId}`,
+        `${pathurl}:7870/displayfile/${fileId}`,
         { responseType: "arraybuffer" }
       );
       const blob = new Blob([response.data], {
@@ -154,15 +183,20 @@ export const MainDrive = ({ fetchstate }) => {
       console.log(e);
     }
   }
-
+  const containerClassName = `m-4 bg-white rounded-md overflow-auto h-[91vh] drop-shadow-sm ${
+    isDragActive ? 'm-4 border-dashed bg-blue-100  border-4 border-gray-300' : ''
+  }`;
   return (
     <>
-      <div className="m-4 bg-white rounded-md overflow-auto  h-[91vh] drop-shadow-sm">
+      <div
+       className={containerClassName}
+        {...getRootProps()}
+      >
         <div className="p-8">
           <div className="mb-8">
             <Breadcrumb />
           </div>
-
+          {isDragActive ? <div className="absolute bg-blue-100 inset-0 flex items-center justify-center"><IoFileTrayOutline className="text-9xl "/> Drop file here</div> : ''}
           <Box flex={true} wrap={true} direction="row" className="w-full gap-5">
             {Filelist &&
               Filelist.map((prev) => (
@@ -181,7 +215,7 @@ export const MainDrive = ({ fetchstate }) => {
                         handleContextMenu(e);
                         setclickedfile(prev.fileId);
                       }}
-                      className=" bg-grey border-slate-400 border-2 max-h-[60px] w-52 items-center flex p-4 rounded-xl  cursor-pointer hover:drop-shadow-lg hover:bg-gray-200"
+                      className=" bg-gray-100  max-h-[60px] w-52 items-center flex p-4 rounded-xl  cursor-pointer  hover:bg-gray-300"
                       style={{ position: "relative" }}
                     >
                       {/* <FaFile className="mr-2" /> */}
@@ -216,7 +250,9 @@ export const MainDrive = ({ fetchstate }) => {
             <FaDownload className="text-xl" />
           </div>
         </div>
-        {selectedFile && <div className="font-bold text-lg">{selectedFile.fileName}</div>}
+        {selectedFile && (
+          <div className="font-bold text-lg">{selectedFile.fileName}</div>
+        )}
         <div>
           {selectedFile ? (
             <Displayfile selectedFile={selectedFile} />

@@ -9,7 +9,8 @@ import { SiProtondrive } from "react-icons/si";
 import { ImOnedrive } from "react-icons/im";
 import { IoAddOutline } from "react-icons/io5";
 import axios from "axios";
-
+const pathurl = `http://localhost`;
+// const pathurl = `http://192.168.55.37`;
 export const Sidebar = ({ fetchheader }) => {
   const {
     activeMenu,
@@ -26,7 +27,7 @@ export const Sidebar = ({ fetchheader }) => {
     formData.append("upload", file);
     try {
       const response = await axios.post(
-        "http://localhost:7870/upload",
+        `${pathurl}:7870/upload`,
         formData,
         {
           onUploadProgress: (progressEvent) => {
@@ -44,7 +45,7 @@ export const Sidebar = ({ fetchheader }) => {
         data: response.data[0],
         EMP_ID: localStorage.getItem("EMP_ID"),
       };
-      await axios.post("http://localhost:5000/uploadfiles", FormDataDetail2);
+      await axios.post(`${pathurl}:7871/uploadfiles`, FormDataDetail2);
       fetchheader();
       console.log(response.data);
     } catch (error) {
