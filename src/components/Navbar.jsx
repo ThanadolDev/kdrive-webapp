@@ -72,16 +72,18 @@ export const Navbar = () => {
       ></NavButton>
 
       <div
-        onClick={(e) => handleContextMenu(e)}
-        className="flex  hover:bg-gray-100 gap-2 rounded-xl p-2 cursor-pointer items-center"
+        
+        className="flex   gap-2  items-center"
       >
         <img
           src={`https://api.nitisakc.dev/avatar/${empid}`}
           alt=""
         />
         <div>{username}</div>
+        <div className="hover:bg-gray-100 rounded-xl p-2 cursor-pointer flex gap-2 items-center" onClick={(e) => handleContextMenu(e)}>
         <IoIosLogOut className="text-xl text-blue-700 font-bold" />
         <div className="font-bold text-blue-700">Logout</div>
+        </div>
       </div>
     </div>
   );
