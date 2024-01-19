@@ -21,8 +21,8 @@ import { IoFileTrayOutline } from "react-icons/io5";
 const pdfjs = require("pdfjs-dist");
 pdfjs.GlobalWorkerOptions.workerSrc = require("pdfjs-dist/build/pdf.worker.entry.js");
 
-const pathurl = `http://localhost`;
-// const pathurl = `http://192.168.55.37`;
+// const pathurl = `http://localhost`;
+const pathurl = `http://192.168.55.37`;
 
 export const MainDrive = ({ fetchstate }) => {
     const {
