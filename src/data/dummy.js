@@ -5874,6 +5874,9 @@ export const PyramidData = [
 
 
 export const Dummyfolder = [
-  {folderName: 'test', folderId: '123718273sdadjk'},
-  {folderName: 'test2', folderId: '213123dadsklj'}
+  {folderName: 'test', folderId: '1'},
+  {folderName: 'test2', folderId: '2'},
+  {folderName: 'test3', folderId: '3'},
+  {folderName: 'test4', folderId: '4'},
+  {folderName: 'test5', folderId: '5'},
 ]
