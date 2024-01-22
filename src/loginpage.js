@@ -105,12 +105,12 @@ function LoginPage() {
       <div className="login-page">
         <div className="login-container">
           <div className="logo-login">
-            <div className="ingenilogo">
+            {/* <div className="ingenilogo">
               <img src="ingenilogo.png" />
             </div>
             <div className="kpasslogo">
               <img src="kpasscopy.png" />
-            </div>
+            </div> */}
           </div>
   
           <div className="login-form-container">

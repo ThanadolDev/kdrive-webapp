@@ -4,11 +4,11 @@ import Chart from "react-apexcharts";
 import React, { useEffect, useState } from "react";
 import { FiSettings } from "react-icons/fi";
 import { IoMdAdd } from "react-icons/io";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route,Navigate, useParams } from "react-router-dom";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { Button,Chartsheader,Footer,Header,Navbar,Sidebar,UserProfile,Modals } from "./components";
 
-import { MainDrive } from "./pages";
+import { MainDrive,FolderContents } from "./pages";
 import { useStateContext} from './contexts/ContextProvider'
 
 function App() {
@@ -38,7 +38,7 @@ function App() {
         </div>
         {activeMenu ? (
           <div className="w-72 fixed sidebar dark:bf-secondary-dark-bg bg-white">
-             <Sidebar fetchheader={fetchheader}/>
+             <Sidebar fetchheader={fetchheader} />
           </div>
         ) : (
           <div className="w-0 dark:bg-secondary-dark-bg"><Sidebar/></div>
@@ -57,7 +57,9 @@ function App() {
           
           <div>
             <Routes>
-              <Route path="/" element={<MainDrive fetchstate={fetchstate}/>} />
+              <Route path="/Drive" element={<MainDrive fetchstate={fetchstate}/>} />
+              <Route path="/" element={<Navigate to="/Drive" replace />} />
+              <Route path="/Drive/Folder/:id" element={<FolderContents fetchstate={fetchstate} />} />
             </Routes>
           </div>
         </div>

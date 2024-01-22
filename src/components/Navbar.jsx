@@ -75,10 +75,12 @@ export const Navbar = () => {
         
         className="flex   gap-2  items-center"
       >
-        <img
+        {/* <img
           src={`https://api.nitisakc.dev/avatar/${empid}`}
+          // src={'https://variety.com/wp-content/uploads/2011/05/drive-2011.jpg?w=1000&h=562&crop=1'}
           alt=""
-        />
+          className="w-[50px] h-[50px] rounded-xl "
+        /> */}
         <div>{username}</div>
         <div className="hover:bg-gray-100 rounded-xl p-2 cursor-pointer flex gap-2 items-center" onClick={(e) => handleContextMenu(e)}>
         <IoIosLogOut className="text-xl text-blue-700 font-bold" />

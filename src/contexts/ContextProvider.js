@@ -14,6 +14,8 @@ export const ContextProvider = ({ children }) => {
   const [contextMenuPosition, setContextMenuPosition] = useState({x: 0,y: 0,});
   const [editnamemodal, seteditnamemodal] = useState(false)
   const [deletemodal, setdeletemodal] = useState(false)
+  const [addfoldermodal, setaddfoldermodal] = useState(false)
+  const [folderhistory, setfolderhistory] = useState([])
 
   const openModal = (file) => {
     setSelectedFile(file);
@@ -41,6 +43,34 @@ export const ContextProvider = ({ children }) => {
   const closedeletemodal = () => {
     setdeletemodal(false)
   }
+  const openaddfolder = () => {
+   setaddfoldermodal(true)
+  }
+  const closeaddfolder = () => {
+    setaddfoldermodal(false)
+  }
+
+  const addfolderhistory = (foldername,folderId) => {
+    const newFolder = { foldername, folderId };
+    setfolderhistory((prevHistory) => [...prevHistory, newFolder]);
+    console.log(folderhistory)
+  }
+  
+const removeFolderAndSubsequent = (clickedFolderId) => {
+  setfolderhistory((prevHistory) => {
+    const indexToRemove = prevHistory.findIndex(
+      (folder) => folder.folderId === clickedFolderId
+    );
+
+    if (indexToRemove !== -1) {
+      return prevHistory.slice(0, indexToRemove);
+    }
+
+    return prevHistory;
+  });
+};
+
+
   return (
     <StateContext.Provider
       value={{
@@ -67,7 +97,13 @@ export const ContextProvider = ({ children }) => {
         openeditModal,
         closeeditmodal,
         opendeleteModal,
-        closedeletemodal
+        closedeletemodal,
+        openaddfolder,
+        closeaddfolder,
+        addfoldermodal,
+        addfolderhistory,
+        folderhistory,
+        removeFolderAndSubsequent
       }}
     >
       {children}

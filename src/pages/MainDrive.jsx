@@ -6,8 +6,10 @@ import {
     Checkfileicon,
     Displayfile,
 } from "../components";
+import { Dummyfolder } from '../data/dummy'
 import { Modals } from "../components";
 import { IoMdClose } from "react-icons/io";
+import { IoAddOutline } from "react-icons/io5";
 import { CiFolderOn } from "react-icons/ci";
 import { MdSaveAlt } from "react-icons/md";
 import { IoMdMore } from "react-icons/io";
@@ -17,6 +19,7 @@ import { useStateContext } from "../contexts/ContextProvider";
 import { FaDownload } from "react-icons/fa";
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
+import { BrowserRouter, Routes, Route, NavLink, useNavigate } from "react-router-dom";
 import { IoFileTrayOutline } from "react-icons/io5";
 const pdfjs = require("pdfjs-dist");
 pdfjs.GlobalWorkerOptions.workerSrc = require("pdfjs-dist/build/pdf.worker.entry.js");
@@ -24,7 +27,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = require("pdfjs-dist/build/pdf.worker.entry
 const pathurl = `http://localhost`;
 // const pathurl = `http://192.168.55.37`;
 
-export const MainDrive = ({ fetchstate }) => {
+export const MainDrive = ({ fetchstate, folderId }) => {
     const {
         activeMenu,
         isModalOpen,
@@ -45,13 +48,25 @@ export const MainDrive = ({ fetchstate }) => {
         closeeditmodal,
         opendeleteModal,
         closedeletemodal,
+        openaddfolder,
+        closeaddfolder,
+        addfoldermodal,
+        addfolderhistory,
     } = useStateContext();
 
     const [Filelist, setFileList] = useState();
     const [clickedfile, setclickedfile] = useState();
     const [fileName, setFileName] = useState("");
+    const [folderName, setfolderName] = useState("");
+    const [folderState, setfolderState] = useState(false)
+    const navigate = useNavigate();
 
     const onDrop = async (acceptedFiles) => {
+        if (acceptedFiles.length > 1) {
+            console.error("Error: Only one file can be uploaded at a time.");
+            window.alert("Error: Only one file can be uploaded at a time.");
+            return;
+        }
 
         const formData = new FormData();
         acceptedFiles.forEach((file) => {
@@ -65,7 +80,7 @@ export const MainDrive = ({ fetchstate }) => {
                 formData
             );
             const FormDataDetail2 = {
-                Folder: null,
+                Folder: folderState ? folderId : null,
                 data: response.data[0],
                 EMP_ID: localStorage.getItem("EMP_ID"),
             };
@@ -82,17 +97,40 @@ export const MainDrive = ({ fetchstate }) => {
         onDrop,
         noClick: true,
     });
+
     async function fetchData() {
         try {
             const urid = localStorage.getItem("EMP_ID");
-            const fileResult = await axios.get(
-                `${pathurl}:7871/getrootfiles/` + urid
-            );
-            const combinedData = {
-                files: fileResult.data,
-            };
-            setFileList(fileResult.data);
-            console.log("Files:", combinedData.files);
+            if (folderState) {
+                const fileResult = await axios.get(
+                    `${pathurl}:7871/getrootfiles/` + urid
+                );
+                const folderResult = await axios.get(
+                    `${pathurl}:7871/getrootfiles/` + urid
+                )
+                const combinedData = {
+                    files: fileResult.data,
+                    folder: folderResult.data
+                };
+                setFileList(fileResult.data);
+                // setFolderList(folderResult.data); 
+                console.log("Files:", combinedData.files);
+                console.log("Folder:" ,) 
+            } else {
+                const fileResult = await axios.get(
+                    `${pathurl}:7871/getrootfiles/` + urid
+                );
+                const folderResult = await axios.get(
+                    `${pathurl}:7871/getrootfolders/` + urid
+                )
+                const combinedData = {
+                    files: fileResult.data,
+                    folder: folderResult.data
+                };
+                setFileList(fileResult.data);
+                // setFolderList(folderResult.data); 
+                console.log("Files:", combinedData.files);
+            }
         } catch (error) {
             console.error("Error fetching data:", error);
         }
@@ -127,6 +165,9 @@ export const MainDrive = ({ fetchstate }) => {
 
     useEffect(() => {
         fetchData();
+        if (folderId !== undefined) {
+            setfolderState(true)
+        }
     }, [fetchstate]);
 
     const handleContextMenu = (event) => {
@@ -145,12 +186,38 @@ export const MainDrive = ({ fetchstate }) => {
             fetchData();
         } catch (e) {
             console.log(e);
+            window.alert(e)
+        }
+    }
+
+    async function addfolder() {
+        if (!folderName.trim()) {
+            console.log("Folder name cannot be empty");
+            window.alert("Folder name can't be empty");
+            return;
+        }
+        try {
+            const data = {
+                folderName: folderName,
+                EMP_ID: localStorage.getItem('EMP_ID'),
+                Folder: folderState ? folderId : null
+            };
+
+            const res = await axios.post(`${pathurl}:7871/addfolder`, data);
+            console.log(res)
+            closeaddfolder();
+            fetchData();
+
+        } catch (e) {
+            console.log(e)
+            window.alert(e)
         }
     }
 
     async function editfilename(fileId) {
         if (!fileName.trim()) {
             console.log("File name cannot be empty");
+            window.alert("File name can't be empty");
             return;
         }
 
@@ -164,6 +231,10 @@ export const MainDrive = ({ fetchstate }) => {
         } catch (e) {
             console.log(e);
         }
+    }
+
+    async function editfoldername() {
+
     }
 
     async function openModalFile(fileId, fileExtension, fileName) {
@@ -189,12 +260,15 @@ export const MainDrive = ({ fetchstate }) => {
         }`;
     return (
         <>
+
             <div
                 className={containerClassName}
                 {...getRootProps()}
             >
                 <div className="p-8">
-                    <div className="mb-8">
+
+                    <div className="mb-8 flex items-center">
+                        <div onClick={openaddfolder} className="mr-2 p-0.5 hover:bg-gray-200 rounded-md"><IoAddOutline className="text-xl" /></div>
                         <Breadcrumb />
                     </div>
                     {isDragActive ? <div className="absolute bg-blue-100 inset-0 flex items-center justify-center"><IoFileTrayOutline className="text-9xl " /> Drop file here</div> : ''}
@@ -233,33 +307,33 @@ export const MainDrive = ({ fetchstate }) => {
                                     </Box>
                                 </div>
                             ))}
-                        <div>
-                            <Box>
-                                <div  onClick={() => {
-                                                // setclickedfile(prev.fileId);
-                                                // openModalFile(
-                                                //     prev.fileId,
-                                                //     prev.fileExtension,
-                                                //     prev.fileName
-                                                // );
-                                            }}
-                                            onContextMenu={(e) => {
-                                                handleContextMenu(e);
-                                                // setclickedfile(prev.fileId);
-                                            }}
-                                  className="bg-gray-100  max-h-[50px] w-52 items-center flex p-4 rounded-xl  cursor-pointer hover:bg-gray-300 ">
-                                    <div className=" flex gap-2">
-                                        <CiFolderOn className="text-xl" />
-                                        <div>
-                                            test folder
+                        {Dummyfolder.map((prev) =>
+                            <div>
+
+                                <Box>
+
+                                    <div onClick={() => {
+                                        addfolderhistory(prev.folderName,prev.folderId)
+                                        navigate(`/Drive/Folder/${prev.folderId}`)
+                                    }}
+                                        onContextMenu={(e) => {
+                                            // handleContextMenu(e);
+                                            // setclickedfile(prev.fileId);
+                                        }}
+                                        className="bg-gray-100  max-h-[50px] w-52 items-center flex p-4 rounded-xl  cursor-pointer hover:bg-gray-300 ">
+                                        <div className=" flex gap-2">
+                                            <CiFolderOn className="text-xl" />
+                                            <div>
+                                                {prev.folderName}
+                                            </div>
+                                        </div>
+                                        <div className="ml-auto hover:bg-gray-400 p-0.5 rounded-xl">
+                                            <IoMdMore className="text-xl" />
                                         </div>
                                     </div>
-                                    <div className="ml-auto hover:bg-gray-400 p-0.5 rounded-xl">
-                                        <IoMdMore className="text-xl" />
-                                    </div>
-                                </div>
-                            </Box>
-                        </div>
+                                </Box>
+                            </div>
+                        )}
                     </Box>
                 </div>
             </div>
@@ -381,6 +455,36 @@ export const MainDrive = ({ fetchstate }) => {
                     <div
                         onClick={() => deletefile(clickedfile)}
                         className=" flex items-center mb-2 hover:bg-gray-400 rounded-lg cursor-pointer hover:drop-shadow-lg gap-2 bg-gray-400 p-2"
+                    >
+                        <div>Confirm</div>
+                    </div>
+                </div>
+            </Modals>
+            <Modals isOpen={addfoldermodal} onClose={closeaddfolder}>
+                <div className="flex-row-reverse flex">
+                    <div
+                        onClick={closeaddfolder}
+                        className="text-xl font-bold mb-2 hover:bg-gray-400 rounded-xl p-2"
+                    >
+                        <IoMdClose className="text-xl" />
+                    </div>
+                </div>
+                <div className="mb-2">
+                    Folder Name
+                </div>
+                <div class="w-full mb-6 md:mb-0">
+                    <input
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border  rounded p-2 mb-3 focus:outline-none focus:bg-white"
+                        type="text"
+                        placeholder="Good folder"
+                        onChange={(e) => setfolderName(e.target.value)}
+                    />
+                </div>
+                <div className="flex-row-reverse flex gap-4">
+
+                    <div
+                        onClick={() => addfolder()}
+                        className=" flex items-center mb-2 hover:bg-blue-500 rounded-lg cursor-pointer hover:drop-shadow-lg gap-2 bg-blue-400 p-2"
                     >
                         <div>Confirm</div>
                     </div>
