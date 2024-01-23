@@ -7,6 +7,8 @@ import { AiFillDashboard } from "react-icons/ai";
 import { SiProtondrive } from "react-icons/si";
 import { ImOnedrive } from "react-icons/im";
 import { IoAddOutline } from "react-icons/io5";
+import { useParams } from "react-router-dom";
+
 import axios from "axios";
 // const pathurl = `http://localhost`;
 const pathurl = `http://192.168.55.37`;
@@ -18,7 +20,10 @@ export const Sidebar = ({ fetchheader }) => {
     closeModal,
     setUploadProgress,
     uploadProgress,
+    folderhistory
   } = useStateContext();
+
+  const { id } = useParams();
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
@@ -40,7 +45,7 @@ export const Sidebar = ({ fetchheader }) => {
       );
       setUploadProgress(0);
       const FormDataDetail2 = {
-        Folder: null,
+        Folder: id !== undefined ? id : null,
         data: response.data[0],
         EMP_ID: localStorage.getItem("EMP_ID"),
       };
@@ -63,6 +68,7 @@ export const Sidebar = ({ fetchheader }) => {
       {activeMenu && (
         <>
           <div className="flex justify-between items-center ml-2">
+           
             <Link
               to="/"
               // onClick={() => {
@@ -117,7 +123,7 @@ export const Sidebar = ({ fetchheader }) => {
                 </div>
               )}
               <NavLink
-                to={`/`}
+                to={`/Drive`}
                 key={"Drive"}
                 style={({ isActive }) => ({
                   backgroundColor: isActive ? isActive : "",
