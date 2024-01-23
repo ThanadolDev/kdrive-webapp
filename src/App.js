@@ -14,7 +14,8 @@ import { useStateContext} from './contexts/ContextProvider'
 function App() {
   const {activeMenu} = useStateContext();
   const [fetchstate, setfetchstate] = useState(false)
-
+  const { id } = useParams();
+  
   function fetchheader (){
     setfetchstate(!fetchstate)
   }
@@ -38,7 +39,7 @@ function App() {
         </div>
         {activeMenu ? (
           <div className="w-72 fixed sidebar dark:bf-secondary-dark-bg bg-white">
-             <Sidebar fetchheader={fetchheader} />
+             <Sidebar fetchheader={fetchheader} folderId={id}/>
           </div>
         ) : (
           <div className="w-0 dark:bg-secondary-dark-bg"><Sidebar/></div>
@@ -59,7 +60,7 @@ function App() {
             <Routes>
               <Route path="/Drive" element={<MainDrive fetchstate={fetchstate}/>} />
               <Route path="/" element={<Navigate to="/Drive" replace />} />
-              <Route path="/Drive/Folder/:id" element={<FolderContents fetchstate={fetchstate} />} />
+              <Route path="/Drive/Folder/:id" element={<FolderContents fetchstate={fetchstate} fetchheader={fetchheader}/>} />
             </Routes>
           </div>
         </div>

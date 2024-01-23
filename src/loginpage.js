@@ -107,10 +107,10 @@ function LoginPage() {
           <div className="logo-login">
             {/* <div className="ingenilogo">
               <img src="ingenilogo.png" />
-            </div>
-            <div className="kpasslogo">
-              <img src="kpasscopy.png" />
             </div> */}
+            <div className="kpasslogo">
+               <img src="/kpasscopy.png" />
+           </div>
           </div>
   
           <div className="login-form-container">

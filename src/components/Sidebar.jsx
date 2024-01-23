@@ -20,14 +20,14 @@ export const Sidebar = ({ fetchheader }) => {
     closeModal,
     setUploadProgress,
     uploadProgress,
-    folderhistory
+    folderhistory,
+    currentParams
   } = useStateContext();
-
-  const { id } = useParams();
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     const formData = new FormData();
+    console.log(currentParams)
     formData.append("upload", file);
     try {
       const response = await axios.post(
@@ -45,7 +45,7 @@ export const Sidebar = ({ fetchheader }) => {
       );
       setUploadProgress(0);
       const FormDataDetail2 = {
-        Folder: id !== undefined ? id : null,
+        Folder: currentParams ? currentParams : null,
         data: response.data[0],
         EMP_ID: localStorage.getItem("EMP_ID"),
       };

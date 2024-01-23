@@ -19,6 +19,7 @@ export const ContextProvider = ({ children }) => {
   const [editfoldernamemodal, seteditfoldernamemodal] = useState(false)
   const [rightClickFolderModal, setRightClickFolderModal] = useState(false)
   const [deleteFolderModal, setdeleteFolderModal] = useState(false)
+  const [currentParams, setcurrentParams] = useState()
 
   const openModal = (file) => {
     setSelectedFile(file);
@@ -79,11 +80,23 @@ export const ContextProvider = ({ children }) => {
   const removeFolderAndSubsequent = (targetFolderId) => {
     const updatedHistory = folderhistory.filter(folder => folder.folderId <= targetFolderId);
     setfolderhistory(updatedHistory);
+   
   };
+
+  const removeAllFolderHistory = () => {
+    setfolderhistory([])
+  }
+
+  const setUrlParams = (url) => {
+    setcurrentParams(url)
+  }
 
   return (
     <StateContext.Provider
       value={{
+        setUrlParams,
+        currentParams,
+        removeAllFolderHistory,
         openrightclickFolderModal,
         closerightclickFolderModal,
         rightClickFolderModal,

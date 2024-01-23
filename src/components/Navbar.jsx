@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { AioutlineMenu } from "react-icons/ai";
 import { FiShoppingCart } from "react-icons/fi";
 import { BsChatLeft } from "react-icons/ri";
@@ -8,6 +8,7 @@ import { useStateContext } from "../contexts/ContextProvider";
 import { AiOutlineMenu } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { IoIosLogOut } from "react-icons/io";
+import axios from "axios";
 
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
@@ -27,6 +28,7 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
 );
 
 export const Navbar = () => {
+
   const {
     activeMenu,
     setActiveMenu,
@@ -37,21 +39,33 @@ export const Navbar = () => {
     rightclickmodal,
     contextMenuPosition,
   } = useStateContext();
-  const username =
-    localStorage.getItem("EMP_FNAME") + localStorage.getItem("EMP_LNAME");
+
+  const [pfp, setpfp] = useState('https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain')
+
+  const username = localStorage.getItem("EMP_FNAME") + localStorage.getItem("EMP_LNAME");
   const empid = localStorage.getItem("EMP_ID");
+
   const handleContextMenu = (event) => {
     localStorage.removeItem("EMP_ID");
     window.location.reload();
   };
 
+  async function getimage() {
+    try{
+    await axios.get(`https://api.nitisakc.dev/avatar/${empid}`)
+    setpfp(`https://api.nitisakc.dev/avatar/${empid}`)
+    }catch {
+      setpfp('https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain')
+    }
+  }
+
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
-
+    getimage()
     window.addEventListener("resize", handleResize);
 
     handleResize();
-
+    
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -75,12 +89,11 @@ export const Navbar = () => {
         
         className="flex   gap-2  items-center"
       >
-        {/* <img
-          src={`https://api.nitisakc.dev/avatar/${empid}`}
-          // src={'https://variety.com/wp-content/uploads/2011/05/drive-2011.jpg?w=1000&h=562&crop=1'}
+        <img
+          src={pfp}
           alt=""
           className="w-[50px] h-[50px] rounded-xl "
-        /> */}
+        />
         <div>{username}</div>
         <div className="hover:bg-gray-100 rounded-xl p-2 cursor-pointer flex gap-2 items-center" onClick={(e) => handleContextMenu(e)}>
         <IoIosLogOut className="text-xl text-blue-700 font-bold" />
