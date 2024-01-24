@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AioutlineMenu } from "react-icons/ai";
 import { FiShoppingCart } from "react-icons/fi";
 import { BsChatLeft } from "react-icons/ri";
@@ -28,7 +28,6 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
 );
 
 export const Navbar = () => {
-
   const {
     activeMenu,
     setActiveMenu,
@@ -40,9 +39,12 @@ export const Navbar = () => {
     contextMenuPosition,
   } = useStateContext();
 
-  const [pfp, setpfp] = useState('https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain')
+  const [pfp, setpfp] = useState(
+    "https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain"
+  );
 
-  const username = localStorage.getItem("EMP_FNAME") + localStorage.getItem("EMP_LNAME");
+  const username =
+    localStorage.getItem("EMP_FNAME") + " " + localStorage.getItem("EMP_LNAME");
   const empid = localStorage.getItem("EMP_ID");
 
   const handleContextMenu = (event) => {
@@ -51,21 +53,23 @@ export const Navbar = () => {
   };
 
   async function getimage() {
-    try{
-    await axios.get(`https://api.nitisakc.dev/avatar/${empid}`)
-    setpfp(`https://api.nitisakc.dev/avatar/${empid}`)
-    }catch {
-      setpfp('https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain')
+    try {
+      await axios.get(`https://api.nitisakc.dev/avatar/${empid}`);
+      setpfp(`https://api.nitisakc.dev/avatar/${empid}`);
+    } catch {
+      setpfp(
+        "https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain"
+      );
     }
   }
 
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
-    getimage()
+    getimage();
     window.addEventListener("resize", handleResize);
 
     handleResize();
-    
+
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -85,19 +89,23 @@ export const Navbar = () => {
         icon={<AiOutlineMenu />}
       ></NavButton>
 
-      <div
-        
-        className="flex   gap-2  items-center"
-      >
+      <div className="flex   gap-2  items-center">
         <img
-          src={pfp}
+          src={`https://api.nitisakc.dev/avatar/${empid}`}
           alt=""
-          className="w-[50px] h-[50px] rounded-xl "
+          className="w-[40px] h-[40px] rounded-full"
+          onError={(e) => {
+            e.target.onerror = null; 
+            e.target.src = "https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain"; 
+          }}
         />
         <div>{username}</div>
-        <div className="hover:bg-gray-100 rounded-xl p-2 cursor-pointer flex gap-2 items-center" onClick={(e) => handleContextMenu(e)}>
-        <IoIosLogOut className="text-xl text-blue-700 font-bold" />
-        <div className="font-bold text-blue-700">Logout</div>
+        <div
+          className="hover:bg-gray-100 rounded-xl p-2 cursor-pointer flex gap-2 items-center"
+          onClick={(e) => handleContextMenu(e)}
+        >
+          <IoIosLogOut className="text-xl text-blue-700 font-bold" />
+          <div className="font-bold text-blue-700">Logout</div>
         </div>
       </div>
     </div>

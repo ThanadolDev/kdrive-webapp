@@ -11,15 +11,19 @@ export const ContextProvider = ({ children }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [rightclickmodal, setrightclickmodal] = useState(false);
-  const [contextMenuPosition, setContextMenuPosition] = useState({x: 0,y: 0,});
-  const [editnamemodal, seteditnamemodal] = useState(false)
-  const [deletemodal, setdeletemodal] = useState(false)
-  const [addfoldermodal, setaddfoldermodal] = useState(false)
-  const [folderhistory, setfolderhistory] = useState([])
-  const [editfoldernamemodal, seteditfoldernamemodal] = useState(false)
-  const [rightClickFolderModal, setRightClickFolderModal] = useState(false)
-  const [deleteFolderModal, setdeleteFolderModal] = useState(false)
-  const [currentParams, setcurrentParams] = useState()
+  const [contextMenuPosition, setContextMenuPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+  const [editnamemodal, seteditnamemodal] = useState(false);
+  const [deletemodal, setdeletemodal] = useState(false);
+  const [addfoldermodal, setaddfoldermodal] = useState(false);
+  const [folderhistory, setfolderhistory] = useState([]);
+  const [editfoldernamemodal, seteditfoldernamemodal] = useState(false);
+  const [rightClickFolderModal, setRightClickFolderModal] = useState(false);
+  const [AddPlusModal, setAddPlusModal] = useState(false);
+  const [deleteFolderModal, setdeleteFolderModal] = useState(false);
+  const [currentParams, setcurrentParams] = useState();
 
   const openModal = (file) => {
     setSelectedFile(file);
@@ -42,54 +46,62 @@ export const ContextProvider = ({ children }) => {
     setRightClickFolderModal(false);
   };
   const openeditModal = () => {
-    seteditnamemodal(true)
-  }
+    seteditnamemodal(true);
+  };
   const closeeditmodal = () => {
-    seteditnamemodal(false)
-  }
+    seteditnamemodal(false);
+  };
   const opendeleteModal = () => {
-    setdeletemodal(true)
-  }
+    setdeletemodal(true);
+  };
   const closedeletemodal = () => {
-    setdeletemodal(false)
-  }
+    setdeletemodal(false);
+  };
   const openDeleteFolderModal = () => {
-    setdeleteFolderModal(true)
-  }
+    setdeleteFolderModal(true);
+  };
   const closeDeleteFolderModal = () => {
-    setdeleteFolderModal(false)
-  }
+    setdeleteFolderModal(false);
+  };
   const openaddfolder = () => {
-   setaddfoldermodal(true)
-  }
+    setaddfoldermodal(true);
+  };
   const closeaddfolder = () => {
-    setaddfoldermodal(false)
-  }
+    setaddfoldermodal(false);
+  };
   const openeditfolder = () => {
-    seteditfoldernamemodal(true)
-   }
-   const closeeditfolder = () => {
-    seteditfoldernamemodal(false)
-   }
-  const addfolderhistory = (foldername,folderId) => {
+    seteditfoldernamemodal(true);
+  };
+  const closeeditfolder = () => {
+    seteditfoldernamemodal(false);
+  };
+  const openAddPlusFolder = () => {
+    setAddPlusModal(true);
+  }
+  const closeAddPlusFolder = () => {
+    setAddPlusModal(false)
+  }
+
+  const addfolderhistory = (foldername, folderId) => {
     const newFolder = { foldername, folderId };
     setfolderhistory((prevHistory) => [...prevHistory, newFolder]);
-    console.log(folderhistory)
-  }
-  
+    console.log(folderhistory);
+  };
+
   const removeFolderAndSubsequent = (targetFolderId) => {
-    const updatedHistory = folderhistory.filter(folder => folder.folderId <= targetFolderId);
+    const updatedHistory = folderhistory.filter(
+      (folder) => folder.folderId <= targetFolderId
+    );
     setfolderhistory(updatedHistory);
-   
   };
 
   const removeAllFolderHistory = () => {
-    setfolderhistory([])
-  }
+    setfolderhistory([]);
+  };
 
   const setUrlParams = (url) => {
-    setcurrentParams(url)
-  }
+    setcurrentParams(url);
+  };
 
   return (
     <StateContext.Provider
@@ -135,7 +147,10 @@ export const ContextProvider = ({ children }) => {
         addfoldermodal,
         addfolderhistory,
         folderhistory,
-        removeFolderAndSubsequent
+        removeFolderAndSubsequent,
+        openAddPlusFolder,
+        closeAddPlusFolder,
+        AddPlusModal,
       }}
     >
       {children}

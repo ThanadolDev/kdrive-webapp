@@ -93,7 +93,7 @@ export const Sidebar = ({ fetchheader }) => {
           </div>
           <div className="mt-10">
             <div className=" m-3 mt-4 uppercase">
-              {uploadProgress !== 100 ? (
+              {/* {uploadProgress !== 100 ? (
                 <div className="flex cursor-pointer hover:drop-shadow-xl hover:bg-gray-200 item-center gap-2 pl-4 pt-3 pb-2.5 rounded-lg bg-white text-md m-2 mb-4 drop-shadow-md w-[140px]">
                   <input
                     type="file"
@@ -106,7 +106,7 @@ export const Sidebar = ({ fetchheader }) => {
                     className="flex items-center cursor-pointer w-full gap-5"
                   >
                     <IoAddOutline className="text-xl text-blue-700" />
-                    <div>Add file</div>
+                    <div>New</div>
                   </label>
                 </div>
               ) : (
@@ -121,7 +121,7 @@ export const Sidebar = ({ fetchheader }) => {
                   </div>
                   <div>Loading</div>
                 </div>
-              )}
+              )} */}
               <NavLink
                 to={`/Drive`}
                 key={"Drive"}
