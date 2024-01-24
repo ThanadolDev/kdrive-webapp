@@ -20,6 +20,9 @@
 .e-dlg-center-center, .e-quick-popup-wrapper.e-device{
   z-index: 1000000 !important;
 }
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
 
 ::-webkit-scrollbar {
   width: 6px;

@@ -7,9 +7,12 @@ import { IoMdAdd } from "react-icons/io";
 import { BrowserRouter, Routes, Route,Navigate, useParams } from "react-router-dom";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { Button,Chartsheader,Footer,Header,Navbar,Sidebar,UserProfile,Modals } from "./components";
-
+import Alpine from 'alpinejs'
 import { MainDrive,FolderContents } from "./pages";
 import { useStateContext} from './contexts/ContextProvider'
+window.Alpine = Alpine
+ 
+Alpine.start()
 
 function App() {
   const {activeMenu} = useStateContext();

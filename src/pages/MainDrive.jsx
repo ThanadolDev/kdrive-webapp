@@ -14,6 +14,7 @@ import { IoAddOutline } from "react-icons/io5";
 import { CiFolderOn } from "react-icons/ci";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { IoMdMore } from "react-icons/io";
+import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteForever } from "react-icons/md";
 import { useStateContext } from "../contexts/ContextProvider";
@@ -31,8 +32,8 @@ import { IoFileTrayOutline } from "react-icons/io5";
 const pdfjs = require("pdfjs-dist");
 pdfjs.GlobalWorkerOptions.workerSrc = require("pdfjs-dist/build/pdf.worker.entry.js");
 
-// const pathurl = `http://localhost`;
-const pathurl = `http://192.168.55.37`;
+const pathurl = `http://localhost`;
+// const pathurl = `http://192.168.55.37`;
 
 export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
   const {
@@ -115,7 +116,6 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
   };
 
   const handleFileChange = async (event) => {
-    
     const file = event.target.files[0];
     const formData = new FormData();
     console.log(currentParams);
@@ -242,6 +242,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
 
   const handleAddPlusContextMenu = (event) => {
     event.preventDefault();
+    console.log(event);
     const clickX = event.clientX;
     const clickY = event.clientY;
     setContextMenuPosition({ x: clickX, y: clickY });
@@ -369,15 +370,51 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
       <div className={containerClassName} {...getRootProps()}>
         <div className="px-8 py-4">
           <div className="flex mb-8 ">
-            <div
-              onClick={(e) => handleAddPlusContextMenu(e)}
-              className="flex text-white bg-blue-600 items-center gap-2 hover:bg-blue-700 rounded-md px-3 py-1 cursor-pointer"
-            >
-              <IoAddOutline className="text-xl" />
-              <div>New</div>
+            <div class="dropdown inline-block justify-center ">
+              <button class="bg-blue-600 w-32 place-content-between  hover:bg-blue-700 text-gray-700 text-white py-2 px-2 rounded inline-flex items-center">
+                <div className="flex items-center gap-2 ">
+                  <IoAddOutline className="text-xl " />
+                  <div>New</div>
+                </div>
+                <svg
+                  class="fill-current h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />{" "}
+                </svg>
+              </button>
+              <ul class="dropdown-menu absolute hidden border-1 text-gray-700 rounded-xl shadow-lg">
+                <li class="cursor-pointer">
+                  <div
+                    class="rounded-t bg-white hover:bg-gray-300 flex items-center gap-2 py-2 px-4 block whitespace-no-wrap"
+                    onClick={openaddfolder}
+                  >
+                    <MdOutlineCreateNewFolder className="text-xl"/>
+                    Add folder
+                  </div>
+                </li>
+                <li className="cursor-pointer">
+                  <button class="rounded-b bg-white hover:bg-gray-300 py-2 px-4 block whitespace-no-wrap">
+                    <label className="cursor-pointer">
+                      <div className="flex items-center gap-2">
+                        <MdOutlineFileUpload className="text-xl" />
+                        <div>Upload file</div>
+                      </div>
+                      <input
+                        type="file"
+                        id="doc"
+                        name="doc"
+                        onChange={handleFileChange}
+                        hidden
+                      />
+                    </label>
+                  </button>
+                </li>
+              </ul>
             </div>
 
-            <button class="bg-blue flex hover:bg-blue-light gap-2 items-center py-1 px-3 border-2 rounded-lg ml-2">
+            {/* <button class="bg-blue flex hover:bg-blue-light gap-2 items-center py-1 px-3 border-2 rounded-lg ml-2">
               <label className="cursor-pointer">
                 <div className="flex items-center gap-2">
                   <MdOutlineFileUpload className="text-xl text-gray-900" />
@@ -391,7 +428,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
                   hidden
                 />
               </label>
-            </button>
+            </button> */}
           </div>
           <div className="mb-8 flex items-center">
             <Breadcrumb />
@@ -431,7 +468,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
                         handleFolderContextMenu(e);
                         setclickedfile(prev.folderId);
                       }}
-                      className="bg-gray-100  max-h-[50px] w-52 items-center flex p-4 rounded-xl  cursor-pointer hover:bg-gray-300 "
+                      className="bg-gray-100  max-h-[50px] min-w-56  max-w-56 items-center flex p-4 rounded-xl  cursor-pointer hover:bg-gray-300 "
                     >
                       <div className="ml-2.5 flex gap-2">
                         <CiFolderOn className="text-xl" />
@@ -450,6 +487,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
                   </Box>
                 </div>
               ))}
+
             {!fetchStatus &&
               Filelist &&
               Filelist.map((prev) => (
@@ -468,7 +506,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
                         handleContextMenu(e);
                         setclickedfile(prev.fileId);
                       }}
-                      className=" bg-gray-100  max-h-[60px] w-52 items-center flex p-4 rounded-xl  cursor-pointer  hover:bg-gray-300"
+                      className=" bg-gray-100  max-h-[60px] min-w-56 max-w-56 items-center flex p-4 rounded-xl  cursor-pointer  hover:bg-gray-300"
                       //   style={{ position: "relative" }}
                     >
                       {/* <FaFile className="mr-2" /> */}
