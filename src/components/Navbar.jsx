@@ -39,33 +39,20 @@ export const Navbar = () => {
     contextMenuPosition,
   } = useStateContext();
 
-  const [pfp, setpfp] = useState(
-    "https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain"
-  );
 
   const username =
     localStorage.getItem("EMP_FNAME") + " " + localStorage.getItem("EMP_LNAME");
   const empid = localStorage.getItem("EMP_ID");
 
   const handleContextMenu = (event) => {
-    localStorage.removeItem("EMP_ID");
+    const keysToRemove = ["EMP_ID", "EMP_LNAME", "EMP_FNAME", "accessToken", "refreshToken", "ORG_ID"];
+    keysToRemove.forEach(key => localStorage.removeItem(key));
     window.location.reload();
-  };
+};
 
-  async function getimage() {
-    try {
-      await axios.get(`https://api.nitisakc.dev/avatar/${empid}`);
-      setpfp(`https://api.nitisakc.dev/avatar/${empid}`);
-    } catch {
-      setpfp(
-        "https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain"
-      );
-    }
-  }
 
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
-    getimage();
     window.addEventListener("resize", handleResize);
 
     handleResize();

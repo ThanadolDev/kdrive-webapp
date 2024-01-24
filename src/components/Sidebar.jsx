@@ -8,6 +8,7 @@ import { SiProtondrive } from "react-icons/si";
 import { ImOnedrive } from "react-icons/im";
 import { IoAddOutline } from "react-icons/io5";
 import { useParams } from "react-router-dom";
+import { FaSlideshare } from "react-icons/fa";
 
 import axios from "axios";
 // const pathurl = `http://localhost`;
@@ -134,6 +135,19 @@ export const Sidebar = ({ fetchheader }) => {
               >
                 <SiProtondrive className="mt-0.5 text-xl text-blue-700" />
                 <span className="capitalize ">Drive</span>
+              </NavLink>
+              <NavLink
+                to={`/ShareDrive`}
+                key={"ShareDrive"}
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? isActive : "",
+                })}
+                className={({ isActive }) =>
+                  isActive ? activeLink : normalLink
+                }
+              >
+                <FaSlideshare className="mt-0.5 text-xl text-blue-700" />
+                <span className="capitalize ">Share Drive</span>
               </NavLink>
             </div>
           </div>

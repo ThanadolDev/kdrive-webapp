@@ -64,6 +64,7 @@ function App() {
               <Route path="/Drive" element={<MainDrive fetchstate={fetchstate}/>} />
               <Route path="/" element={<Navigate to="/Drive" replace />} />
               <Route path="/Drive/Folder/:id" element={<FolderContents fetchstate={fetchstate} fetchheader={fetchheader}/>} />
+              <Route path="/ShareDrive" element={<FolderContents fetchstate={fetchstate} fetchheader={fetchheader}/>} />
             </Routes>
           </div>
         </div>

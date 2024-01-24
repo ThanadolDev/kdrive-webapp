@@ -9,10 +9,12 @@ import {
 import { MdNoteAdd } from "react-icons/md";
 import { Dummyfolder } from "../data/dummy";
 import { Modals } from "../components";
+import SelectSearch from 'react-select-search';
 import { IoMdClose } from "react-icons/io";
 import { IoAddOutline } from "react-icons/io5";
 import { CiFolderOn } from "react-icons/ci";
 import { MdOutlineFileUpload } from "react-icons/md";
+import { CiShare2 } from "react-icons/ci";
 import { IoMdMore } from "react-icons/io";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
@@ -29,6 +31,8 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { IoFileTrayOutline } from "react-icons/io5";
+import 'react-select-search/style.css'
+
 const pdfjs = require("pdfjs-dist");
 pdfjs.GlobalWorkerOptions.workerSrc = require("pdfjs-dist/build/pdf.worker.entry.js");
 
@@ -75,6 +79,9 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
     AddPlusModal,
     currentParams,
     setUploadProgress,
+    openpermissionModal,
+    closepermissionModal,
+    permissionModal
   } = useStateContext();
 
   const [Filelist, setFileList] = useState();
@@ -599,6 +606,13 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
           <CiEdit className="text-xl" />
           <div>Edit File Name</div>
         </div>
+        <div
+          onClick={openpermissionModal}
+          className="hover:bg-gray-400 p-2 rounded-md flex gap-4 items-center"
+        >
+          <CiShare2  className="text-xl" />
+          <div>Sharing</div>
+        </div>
         <hr class="my-1 h-0.5 border-t-1 bg-neutral-100 opacity-100 dark:opacity-90" />
         <div
           onClick={opendeleteModal}
@@ -621,6 +635,13 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
         >
           <CiEdit className="text-xl" />
           <div className="">Edit Folder Name</div>
+        </div>
+        <div
+          onClick={openpermissionModal}
+          className="hover:bg-gray-400 p-2 rounded-md flex gap-4 items-center"
+        >
+          <CiShare2  className="text-xl" />
+          <div>Sharing</div>
         </div>
         <hr class="my-1 h-0.5 border-t-1 bg-neutral-100 opacity-100 dark:opacity-90" />
         <div
@@ -803,6 +824,41 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
             className=" flex items-center mb-2 hover:bg-blue-700 rounded-lg cursor-pointer  gap-2 bg-blue-600 text-white px-2 py-1"
           >
             <div>Rename</div>
+          </div>
+        </div>
+      </Modals>
+
+      <Modals isOpen={permissionModal} onClose={closepermissionModal}>
+        <div className="place-content-between items-center flex mb-2">
+          <div className="mb-2 font-bold">Sharing</div>
+          <div
+            onClick={closepermissionModal}
+            className="text-xl font-bold mb-2 hover:bg-gray-400 rounded-xl p-2"
+          >
+            <IoMdClose className="text-xl" />
+          </div>
+        </div>
+
+        <div class="w-full items-center  mb-6 md:mb-0">
+         <SelectSearch />
+        </div>
+        <div>
+            <div>people with accses</div>
+            <div>
+                Thanadol CHuesai (you)
+            </div>
+        </div>
+        <div>
+            <div>General access</div>
+            <div>link</div>
+        </div>
+        <div className="flex-row-reverse flex gap-4 mt-2">
+         
+          <div
+            onClick={closepermissionModal}
+            className=" flex items-center mb-2 hover:bg-blue-700 rounded-lg cursor-pointer  gap-2 bg-blue-600 text-white px-2 py-1"
+          >
+            <div>Done</div>
           </div>
         </div>
       </Modals>
