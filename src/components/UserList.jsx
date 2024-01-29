@@ -9,8 +9,8 @@ import axios from "axios";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
 
-const pathurl = `http://localhost`;
-// const pathurl = `http://192.168.55.37`;
+// const pathurl = `http://localhost`;
+const pathurl = `http://192.168.55.37`;
 
 const animatedComponents = makeAnimated();
 
@@ -62,6 +62,7 @@ export const UserList = ({ clickedfile }) => {
     console.log(selectedOption[0].user_id);
     const res = await axios.post(`${pathurl}:7871/addPermission`, {
       fileid: clickedfile,
+      type: 'Viewer',
       userid: selectedOption[0].user_id,
     });
     console.log(res);
@@ -72,6 +73,15 @@ export const UserList = ({ clickedfile }) => {
     const res = await axios.put(`${pathurl}:7871/editpermission`, {
       fileid: clickedfile,
       type: selectedOption,
+      user_id: usrId,
+    });
+    console.log(res.data);
+  };
+
+  const handleRemoveRole = async (selectedOption, usrId) => {
+    const res = await axios.put(`${pathurl}:7871/removepermission`, {
+      fileid: clickedfile,
+      // type: selectedOption,
       user_id: usrId,
     });
     console.log(res.data);
@@ -215,7 +225,7 @@ export const UserList = ({ clickedfile }) => {
                       </MenuItem> */}
                       <MenuItem
                         value="Remove"
-                        onClick={(e) => handleChangeRole(e.value, user.user_id)}
+                        onClick={(e) => handleRemoveRole(e.value, user.user_id)}
                       >
                         Remove
                       </MenuItem>

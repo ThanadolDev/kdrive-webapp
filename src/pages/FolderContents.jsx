@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useStateContext } from "../contexts/ContextProvider";
 
 
-export const FolderContents = ({fetchstate}) => {
+export const FolderContents = ({fetchstate, shareStatus}) => {
   const { id } = useParams();
   const {
     setUrlParams,
@@ -16,8 +16,8 @@ export const FolderContents = ({fetchstate}) => {
   return (
     <div>
         {/* FolderContents */}
-        {/* <p>Folder ID: {id}</p> */}
-        <MainDrive fetchstate={fetchstate} folderId={id}/>
+        {/* <p>Folder ID: {shareStatus}</p> */}
+        <MainDrive fetchstate={fetchstate} folderId={id} shareStatus={shareStatus}/>
     </div>
   )
 }
