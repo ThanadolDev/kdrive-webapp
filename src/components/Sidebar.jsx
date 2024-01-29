@@ -61,9 +61,9 @@ export const Sidebar = ({ fetchheader }) => {
   };
 
   const activeLink =
-    "flex item-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg bg-gray-200 text-md m-2 ";
+    "flex item-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg bg-gray-200 text-md  ";
   const normalLink =
-    "flex item-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-md   dark:hover:text-black hover:bg-white";
+    "flex item-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-md   dark:hover:text-black hover:bg-gray-200 my-2";
   return (
     <div className=" h-screen absolute w-full md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10 bg-white drop-shadow-sm">
       {activeMenu && (
@@ -147,7 +147,7 @@ export const Sidebar = ({ fetchheader }) => {
                 }
               >
                 <FaSlideshare className="mt-0.5 text-xl text-blue-700" />
-                <span className="capitalize ">Share Drive</span>
+                <span className="capitalize ">Shared Drive</span>
               </NavLink>
             </div>
           </div>

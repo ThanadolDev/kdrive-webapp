@@ -8,11 +8,11 @@ import {
 } from "../components";
 import { MdNoteAdd } from "react-icons/md";
 import { Dummyfolder } from "../data/dummy";
-import { Modals } from "../components";
-import SelectSearch from 'react-select-search';
+import { Modals, UserList } from "../components";
 import { IoMdClose } from "react-icons/io";
 import { IoAddOutline } from "react-icons/io5";
 import { CiFolderOn } from "react-icons/ci";
+import { IoLinkOutline } from "react-icons/io5";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { CiShare2 } from "react-icons/ci";
 import { IoMdMore } from "react-icons/io";
@@ -20,6 +20,7 @@ import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteForever } from "react-icons/md";
 import { useStateContext } from "../contexts/ContextProvider";
+import { LuHardDriveDownload } from "react-icons/lu";
 import { FaDownload } from "react-icons/fa";
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
@@ -31,13 +32,13 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { IoFileTrayOutline } from "react-icons/io5";
-import 'react-select-search/style.css'
+import "react-select-search/style.css";
 
 const pdfjs = require("pdfjs-dist");
 pdfjs.GlobalWorkerOptions.workerSrc = require("pdfjs-dist/build/pdf.worker.entry.js");
 
-const pathurl = `http://localhost`;
-// const pathurl = `http://192.168.55.37`;
+// const pathurl = `http://localhost`;
+const pathurl = `http://192.168.55.37`;
 
 export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
   const {
@@ -81,7 +82,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
     setUploadProgress,
     openpermissionModal,
     closepermissionModal,
-    permissionModal
+    permissionModal,
   } = useStateContext();
 
   const [Filelist, setFileList] = useState();
@@ -361,6 +362,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
         blob: URL.createObjectURL(blob),
         fileExtension: fileExtension,
         fileName: fileName,
+        fileId: fileId
       });
     } catch (e) {
       console.log(e);
@@ -397,7 +399,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
                     class="rounded-t bg-white hover:bg-gray-300 flex items-center gap-2 py-2 px-4 block whitespace-no-wrap"
                     onClick={openaddfolder}
                   >
-                    <MdOutlineCreateNewFolder className="text-xl"/>
+                    <MdOutlineCreateNewFolder className="text-xl" />
                     Add folder
                   </div>
                 </li>
@@ -447,20 +449,22 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
           ) : (
             ""
           )}
-          <Box flex={true} wrap={true} direction="row" className="w-full gap-5">
-            {fetchStatus && (
-              <div className="w-full">
-                <div role="status" class="max-w-[300px] animate-pulse">
-                  <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
-                  <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
-                  <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
-                  <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
-                  <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
-                  <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full"></div>
-                  <span class="sr-only">Loading...</span>
-                </div>
+
+          {fetchStatus && (
+            <div className="w-full">
+              <div role="status" class="max-w-[300px] animate-pulse">
+                <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+                <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
+                <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
+                <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
+                <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
+                <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full"></div>
+                <span class="sr-only">Loading...</span>
               </div>
-            )}
+            </div>
+          )}
+          {Folderlist && Folderlist.length >= 1 &&   <div className="mb-2 font-bold">Folder</div>}
+          <Box flex={true} wrap={true} direction="row" className="w-full gap-5">
             {!fetchStatus &&
               Folderlist &&
               Folderlist.map((prev) => (
@@ -477,7 +481,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
                       }}
                       className="bg-gray-100  max-h-[50px] min-w-56  max-w-56 items-center flex p-4 rounded-xl  cursor-pointer hover:bg-gray-300 "
                     >
-                      <div className="ml-2.5 flex gap-2">
+                      <div className=" flex gap-2">
                         <CiFolderOn className="text-xl" />
                         <div>{prev.folderName}</div>
                       </div>
@@ -494,7 +498,10 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
                   </Box>
                 </div>
               ))}
-
+          </Box>
+          {Filelist && Filelist.length >= 1 && <div className="my-2 font-bold">Files</div>}
+              
+          <Box flex={true} wrap={true} direction="row" className="w-full gap-5">
             {!fetchStatus &&
               Filelist &&
               Filelist.map((prev) => (
@@ -530,18 +537,17 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
                   </Box>
                 </div>
               ))}
-
-            {Folderlist &&
-              Folderlist.length === 0 &&
-              Filelist &&
-              Filelist.length === 0 && (
-                <div className="flex items-center w-full justify-center h-[70vh]">
-                  <div className="text-gray-500   inset-0 flex items-center justify-center">
-                    <MdNoteAdd className="text-9xl " /> This folder is empty
-                  </div>
-                </div>
-              )}
           </Box>
+          {Folderlist &&
+            Folderlist.length === 0 &&
+            Filelist &&
+            Filelist.length === 0 && (
+              <div className="flex items-center w-full justify-center h-[70vh]">
+                <div className="text-gray-500   inset-0 flex items-center justify-center">
+                  <MdNoteAdd className="text-9xl " /> This folder is empty
+                </div>
+              </div>
+            )}
         </div>
       </div>
       <Modals isOpen={isModalOpen} onClose={closeModal}>
@@ -554,7 +560,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
               onClick={() => downloadfile()}
               className="text-xl font-bold mb-4 cursor-pointer hover:bg-gray-400 rounded-xl p-2 mr-2"
             >
-              <FaDownload className="" />
+              <LuHardDriveDownload className="" />
             </div>
             <div
               onClick={closeModal}
@@ -596,7 +602,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
           onClick={() => downloadfile()}
           className="hover:bg-gray-400 p-2 rounded-md flex gap-4 items-center"
         >
-          <FaDownload className="text-lg" />
+          <LuHardDriveDownload className="text-lg" />
           <div>Download File</div>
         </div>
         <div
@@ -610,7 +616,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
           onClick={openpermissionModal}
           className="hover:bg-gray-400 p-2 rounded-md flex gap-4 items-center"
         >
-          <CiShare2  className="text-xl" />
+          <CiShare2 className="text-xl" />
           <div>Sharing</div>
         </div>
         <hr class="my-1 h-0.5 border-t-1 bg-neutral-100 opacity-100 dark:opacity-90" />
@@ -640,7 +646,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
           onClick={openpermissionModal}
           className="hover:bg-gray-400 p-2 rounded-md flex gap-4 items-center"
         >
-          <CiShare2  className="text-xl" />
+          <CiShare2 className="text-xl" />
           <div>Sharing</div>
         </div>
         <hr class="my-1 h-0.5 border-t-1 bg-neutral-100 opacity-100 dark:opacity-90" />
@@ -830,7 +836,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
 
       <Modals isOpen={permissionModal} onClose={closepermissionModal}>
         <div className="place-content-between items-center flex mb-2">
-          <div className="mb-2 font-bold">Sharing</div>
+          <div className="mb-2 font-bold">Share</div>
           <div
             onClick={closepermissionModal}
             className="text-xl font-bold mb-2 hover:bg-gray-400 rounded-xl p-2"
@@ -839,21 +845,24 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader }) => {
           </div>
         </div>
 
-        <div class="w-full items-center  mb-6 md:mb-0">
-         <SelectSearch />
-        </div>
+        <div class="w-full items-center  mb-6 md:mb-0"></div>
         <div>
-            <div>people with accses</div>
+          <div>
+            <UserList clickedfile={clickedfile}/>
+          </div>
+        </div>
+
+        <div className="place-content-between flex gap-4 mt-2 items-center">
+          <div
+            onClick={closepermissionModal}
+            className=" flex items-center text-blue-600 mb-2 hover:bg-gray-200 rounded-full cursor-pointer  gap-2 bg-white border-1 px-2 py-2"
+          >
+          
             <div>
-                Thanadol CHuesai (you)
+              <IoLinkOutline />
             </div>
-        </div>
-        <div>
-            <div>General access</div>
-            <div>link</div>
-        </div>
-        <div className="flex-row-reverse flex gap-4 mt-2">
-         
+            <div>Copy Link</div>
+          </div>
           <div
             onClick={closepermissionModal}
             className=" flex items-center mb-2 hover:bg-blue-700 rounded-lg cursor-pointer  gap-2 bg-blue-600 text-white px-2 py-1"
