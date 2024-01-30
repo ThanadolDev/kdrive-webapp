@@ -4,11 +4,12 @@ import { useParams } from "react-router-dom";
 import { useStateContext } from "../contexts/ContextProvider";
 
 
-export const FolderContents = ({fetchstate, shareStatus}) => {
+export const FolderContents = ({fetchstate,shareStatus}) => {
   const { id } = useParams();
   const {
     setUrlParams,
-    currentParams
+    currentParams,
+    
   } = useStateContext();
   useEffect(() => {
     setUrlParams(id)

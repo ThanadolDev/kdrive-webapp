@@ -3,7 +3,7 @@ import { useStateContext } from "../contexts/ContextProvider";
 import {  useNavigate } from "react-router-dom";
 
 
-export const Breadcrumb = () => {
+export const Breadcrumb = ({shareStatus}) => {
 
   const navigate = useNavigate();
 
@@ -19,10 +19,10 @@ export const Breadcrumb = () => {
         <li class="inline-flex items-center">
           <div
           onClick={() => { 
-            navigate(`/Drive`)
+            {shareStatus ? navigate(`/ShareDrive`) : navigate(`/Drive`)}
             removeAllFolderHistory()
           }}
-            href="/Drive"
+            // href="/Drive"
             class="inline-flex items-center text-xl cursor-pointer font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
           >
             <svg
@@ -63,7 +63,7 @@ export const Breadcrumb = () => {
               // href={`/Drive/Folder/${prev.folderId}`}
               onClick={() => {
                 
-                navigate(`/Drive/Folder/${prev.folderId}`)
+                navigate(`/Folder/${prev.folderId}`)
                 removeFolderAndSubsequent(prev.folderId)
               }
               }

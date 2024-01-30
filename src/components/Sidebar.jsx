@@ -22,7 +22,8 @@ export const Sidebar = ({ fetchheader }) => {
     setUploadProgress,
     uploadProgress,
     folderhistory,
-    currentParams
+    currentParams,
+    removeAllFolderHistory
   } = useStateContext();
 
   const handleFileChange = async (event) => {
@@ -132,6 +133,7 @@ export const Sidebar = ({ fetchheader }) => {
                 className={({ isActive }) =>
                   isActive ? activeLink : normalLink
                 }
+                onClick={() => removeAllFolderHistory()}
               >
                 <SiProtondrive className="mt-0.5 text-xl text-blue-700" />
                 <span className="capitalize ">Drive</span>
@@ -145,6 +147,7 @@ export const Sidebar = ({ fetchheader }) => {
                 className={({ isActive }) =>
                   isActive ? activeLink : normalLink
                 }
+                onClick={() => removeAllFolderHistory()}
               >
                 <FaSlideshare className="mt-0.5 text-xl text-blue-700" />
                 <span className="capitalize ">Shared Drive</span>

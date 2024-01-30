@@ -59,7 +59,6 @@ export const UserList = ({ clickedfile }) => {
   }, []);
 
   const handleUserSelect = async (selectedOption) => {
-    console.log(selectedOption[0].user_id);
     const res = await axios.post(`${pathurl}:7871/addPermission`, {
       fileid: clickedfile,
       type: 'Viewer',
@@ -67,6 +66,7 @@ export const UserList = ({ clickedfile }) => {
     });
     console.log(res);
     setSelectedUsers(selectedOption);
+    handleFetchUserPermission()
   };
 
   const handleChangeRole = async (selectedOption, usrId) => {
@@ -76,6 +76,7 @@ export const UserList = ({ clickedfile }) => {
       user_id: usrId,
     });
     console.log(res.data);
+    handleFetchUserPermission()
   };
 
   const handleRemoveRole = async (selectedOption, usrId) => {
@@ -85,6 +86,7 @@ export const UserList = ({ clickedfile }) => {
       user_id: usrId,
     });
     console.log(res.data);
+    handleFetchUserPermission()
   };
 
   const handleFetchUserPermission = async () => {
@@ -160,15 +162,15 @@ export const UserList = ({ clickedfile }) => {
                       >
                         Viewer
                       </MenuItem>
-                      <MenuItem
+                      {/* <MenuItem
                         value="Editor"
                         onClick={(e) => handleChangeRole(e.value, user.user_id)}
                       >
                         Editor
-                      </MenuItem>
+                      </MenuItem> */}
                       <MenuItem
                         value="Remove"
-                        // onClick={(e) => handleChangeRole(e.value, user.user_id)}
+                        onClick={(e) => handleRemoveRole(e.value, user.user_id)}
                       >
                         Remove
                       </MenuItem>

@@ -83,6 +83,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader, shareStatus }) =>
         openpermissionModal,
         closepermissionModal,
         permissionModal,
+        
     } = useStateContext();
 
     const [Filelist, setFileList] = useState();
@@ -477,7 +478,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader, shareStatus }) =>
             </button> */}
                     </div>
                     <div className="mb-8 flex items-center">
-                        <Breadcrumb />
+                        <Breadcrumb shareStatus={shareStatus}/>
                     </div>
                     {isDragActive ? (
                         <div className="absolute bg-blue-100 inset-0 flex items-center justify-center">
@@ -510,7 +511,7 @@ export const MainDrive = ({ fetchstate, folderId, fetchheader, shareStatus }) =>
                                         <div
                                             onClick={() => {
                                                 addfolderhistory(prev.folderName, prev.folderId);
-                                                navigate(`/Drive/Folder/${prev.folderId}`);
+                                                navigate(`/Folder/${prev.folderId}`);
                                             }}
                                             onContextMenu={(e) => {
                                                 handleFolderContextMenu(e);

@@ -25,6 +25,7 @@ export const ContextProvider = ({ children }) => {
   const [deleteFolderModal, setdeleteFolderModal] = useState(false);
   const [permissionModal, setpermissionModal] = useState(false);
   const [currentParams, setcurrentParams] = useState();
+  const [shareStatus, setshareStatus] = useState();
 
   const openModal = (file) => {
     setSelectedFile(file);
@@ -160,7 +161,9 @@ export const ContextProvider = ({ children }) => {
         AddPlusModal,
         openpermissionModal,
         closepermissionModal,
-        permissionModal
+        permissionModal,
+        setshareStatus,
+        shareStatus
       }}
     >
       {children}
