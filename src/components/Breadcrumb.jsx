@@ -19,8 +19,8 @@ export const Breadcrumb = ({shareStatus}) => {
         <li class="inline-flex items-center">
           <div
           onClick={() => { 
-            {shareStatus ? navigate(`/ShareDrive`) : navigate(`/Drive`)}
-            removeAllFolderHistory()
+            // {shareStatus ? navigate(`/Drive`) : navigate(`/ShareDrive`)}
+            // removeAllFolderHistory()
           }}
             // href="/Drive"
             class="inline-flex items-center text-xl cursor-pointer font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
@@ -44,7 +44,20 @@ export const Breadcrumb = ({shareStatus}) => {
           
         <li>
           <div class="flex items-center">
-            <svg
+           
+            <div
+              // href={`/Drive/Folder/${prev.folderId}`}
+              onClick={() => {
+                
+                navigate(`/Folder/${prev.folderId}`)
+                removeFolderAndSubsequent(prev.folderId)
+              }
+              }
+              class="ms-1 text-xl cursor-pointer font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white"
+            >
+              {prev.foldername}
+            </div>
+             <svg
               class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
@@ -59,18 +72,6 @@ export const Breadcrumb = ({shareStatus}) => {
                 d="m1 9 4-4-4-4"
               />
             </svg>
-            <div
-              // href={`/Drive/Folder/${prev.folderId}`}
-              onClick={() => {
-                
-                navigate(`/Folder/${prev.folderId}`)
-                removeFolderAndSubsequent(prev.folderId)
-              }
-              }
-              class="ms-1 text-xl cursor-pointer font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white"
-            >
-              {prev.foldername}
-            </div>
           </div>
         </li>
         

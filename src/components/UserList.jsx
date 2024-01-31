@@ -49,7 +49,6 @@ export const UserList = ({ clickedfile }) => {
           EMP_FNAME: matchingUser ? matchingUser.EMP_FNAME : null,
           EMP_LNAME: matchingUser ? matchingUser.EMP_LNAME : null,
           ORG_ID: matchingUser ? matchingUser.ORG_ID : null,
-          
         };
       });
       console.log(secondDataWithDetails);
@@ -59,14 +58,18 @@ export const UserList = ({ clickedfile }) => {
   }, []);
 
   const handleUserSelect = async (selectedOption) => {
-    const res = await axios.post(`${pathurl}:7871/addPermission`, {
-      fileid: clickedfile,
-      type: 'Viewer',
-      userid: selectedOption[0].user_id,
-    });
-    console.log(res);
-    setSelectedUsers(selectedOption);
-    handleFetchUserPermission()
+    if (selectedOption && selectedOption[0].user_id) {
+      const res = await axios.post(`${pathurl}:7871/addPermission`, {
+        fileid: clickedfile,
+        type: "Viewer",
+        userid: selectedOption[0].user_id,
+      });
+      console.log(res);
+      // setSelectedUsers(selectedOption);
+      handleFetchUserPermission();
+    } else {
+      return;
+    }
   };
 
   const handleChangeRole = async (selectedOption, usrId) => {
@@ -76,7 +79,7 @@ export const UserList = ({ clickedfile }) => {
       user_id: usrId,
     });
     console.log(res.data);
-    handleFetchUserPermission()
+    handleFetchUserPermission();
   };
 
   const handleRemoveRole = async (selectedOption, usrId) => {
@@ -86,7 +89,7 @@ export const UserList = ({ clickedfile }) => {
       user_id: usrId,
     });
     console.log(res.data);
-    handleFetchUserPermission()
+    handleFetchUserPermission();
   };
 
   const handleFetchUserPermission = async () => {
@@ -96,6 +99,7 @@ export const UserList = ({ clickedfile }) => {
         fileid: clickedfile,
       });
       console.log(res.data);
+      setuserPermissionList(res.data)
       return res.data;
     } catch (error) {
       console.error(error);
@@ -200,7 +204,7 @@ export const UserList = ({ clickedfile }) => {
                         {user.label} ({user.ORG_ID})
                       </div>{" "}
                       <div className="text-sm text-gray-500">
-                        {user.user_id}
+                        {user.user_id} 
                       </div>{" "}
                     </div>
                   </div>

@@ -26,7 +26,7 @@ export const ContextProvider = ({ children }) => {
   const [permissionModal, setpermissionModal] = useState(false);
   const [currentParams, setcurrentParams] = useState();
   const [shareStatus, setshareStatus] = useState();
-
+  const [permState, setpermState] = useState();
   const openModal = (file) => {
     setSelectedFile(file);
     setModalOpen(true);
@@ -97,11 +97,16 @@ export const ContextProvider = ({ children }) => {
   };
 
   const removeFolderAndSubsequent = (targetFolderId) => {
-    const updatedHistory = folderhistory.filter(
-      (folder) => folder.folderId <= targetFolderId
-    );
-    setfolderhistory(updatedHistory);
-  };
+    const targetIndex = folderhistory.findIndex(folder => folder.folderId === targetFolderId);
+    
+    if (targetIndex !== -1) {
+        const updatedHistory = folderhistory.slice(0, targetIndex + 1);
+        console.log(updatedHistory);
+        setfolderhistory(updatedHistory);
+    } else {
+        console.log('Target folder not found in history');
+    }
+};
 
   const removeAllFolderHistory = () => {
     setfolderhistory([]);
@@ -163,7 +168,9 @@ export const ContextProvider = ({ children }) => {
         closepermissionModal,
         permissionModal,
         setshareStatus,
-        shareStatus
+        shareStatus,
+        setpermState,
+        permState
       }}
     >
       {children}
