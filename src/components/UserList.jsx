@@ -18,42 +18,43 @@ export const UserList = ({ clickedfile }) => {
   const [userList, setUserList] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [userPermissionList, setuserPermissionList] = useState([]);
+  const fetchData = async () => {
+    const userLocal = JSON.parse(localStorage.getItem("User_list"));
+    const secondData = await handleFetchUserPermission();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const userLocal = JSON.parse(localStorage.getItem("User_list"));
-      const secondData = await handleFetchUserPermission();
-      const filteredUserList = userLocal.filter((user) => {
-        return (
-          secondData.find(
-            (secondUser) => secondUser.user_id === user.AD_USER_ID
-          ) === undefined
-        );
-      });
-      setUserList(
-        filteredUserList.map((user) => ({
-          label: `${user.EMP_FNAME} ${user.EMP_LNAME}`,
-          Fname: `${user.EMP_FNAME}`,
-          Lname: `${user.EMP_LNAME}`,
-          value: user.AD_USER_ID,
-          user_id: user.AD_USER_ID,
-          ORG_ID: user.ORG_ID,
-        }))
+    const filteredUserList = userLocal.filter((user) => {
+      return (
+        secondData.find(
+          (secondUser) => secondUser.user_id === user.AD_USER_ID
+        ) === undefined
       );
-      const secondDataWithDetails = secondData.map((secondUser) => {
-        const matchingUser = userLocal.find(
-          (user) => user.AD_USER_ID === secondUser.user_id
-        );
-        return {
-          ...secondUser,
-          EMP_FNAME: matchingUser ? matchingUser.EMP_FNAME : null,
-          EMP_LNAME: matchingUser ? matchingUser.EMP_LNAME : null,
-          ORG_ID: matchingUser ? matchingUser.ORG_ID : null,
-        };
-      });
-      console.log(secondDataWithDetails);
-      setuserPermissionList(secondDataWithDetails);
-    };
+    });
+    setUserList(
+      filteredUserList.map((user) => ({
+        label: `${user.EMP_FNAME} ${user.EMP_LNAME}`,
+        Fname: `${user.EMP_FNAME}`,
+        Lname: `${user.EMP_LNAME}`,
+        value: user.AD_USER_ID,
+        user_id: user.AD_USER_ID,
+        ORG_ID: user.ORG_ID,
+      }))
+    );
+    const secondDataWithDetails = secondData.map((secondUser) => {
+      const matchingUser = userLocal.find(
+        (user) => user.AD_USER_ID === secondUser.user_id
+      );
+      return {
+        ...secondUser,
+        EMP_FNAME: matchingUser ? matchingUser.EMP_FNAME : null,
+        EMP_LNAME: matchingUser ? matchingUser.EMP_LNAME : null,
+        ORG_ID: matchingUser ? matchingUser.ORG_ID : null,
+      };
+    });
+    console.log(secondDataWithDetails);
+    setuserPermissionList(secondDataWithDetails);
+  };
+  useEffect(() => {
+    
     fetchData();
   }, []);
 
@@ -66,7 +67,7 @@ export const UserList = ({ clickedfile }) => {
       });
       console.log(res);
       // setSelectedUsers(selectedOption);
-      handleFetchUserPermission();
+      fetchData();
     } else {
       return;
     }

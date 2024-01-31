@@ -37,8 +37,8 @@ import "react-select-search/style.css";
 const pdfjs = require("pdfjs-dist");
 pdfjs.GlobalWorkerOptions.workerSrc = require("pdfjs-dist/build/pdf.worker.entry.js");
 
-const pathurl = `http://localhost`;
-// const pathurl = `http://192.168.55.37`;
+// const pathurl = `http://localhost`;
+const pathurl = `http://192.168.55.37`;
 
 export const MainDrive = ({
   fetchstate,
@@ -104,6 +104,7 @@ export const MainDrive = ({
   const navigate = useNavigate();
 
   const onDrop = async (acceptedFiles) => {
+
     if (permState != "Owner" && permState != "Editor") {
       console.error("You don't have permission to do that");
       window.alert("You don't have permission to upload file in this folder");
@@ -446,7 +447,7 @@ export const MainDrive = ({
               >
                 <div className="flex items-center gap-2 ">
                   <IoAddOutline className="text-xl " />
-                  <div>New {permState}</div>
+                  <div>New</div>
                 </div>
                 <svg
                   class="fill-current h-4 w-4"
@@ -754,7 +755,7 @@ export const MainDrive = ({
         </div>
         <div
           onClick={() => {
-            if (permState != "Owner" && permState != "Editor") {
+            if (permState == "Owner"  || permState == "Editor") {
               openpermissionModal();
             }
           }}
