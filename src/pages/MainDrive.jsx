@@ -253,7 +253,7 @@ export const MainDrive = ({
   async function downloadfile() {
     try {
       const downloadLink = document.createElement("a");
-      downloadLink.href = `${pathurl}:7870/downloadfile/${clickedfile}`;
+      downloadLink.href = `${pathurl}:7870/downloadfile/${clickedfile.fileId}`;
 
       const newWindow = window.open("", "_blank");
       newWindow.document.write(
@@ -370,7 +370,7 @@ export const MainDrive = ({
       const data = {
         folderName: folderName,
         EMP_ID: localStorage.getItem("EMP_ID"),
-        Folder_id: clickedfile,
+        Folder_id: clickedfile.fileId,
       };
 
       const res = await axios.put(`${pathurl}:7871/editfoldername`, data);
@@ -441,7 +441,7 @@ export const MainDrive = ({
               <button
                 class={`${
                   permState != "Owner" && permState != "Editor"
-                    ? "bg-gray-500 cursor-not-allowed"
+                    ? "text-gray-300 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700"
                 }   w-32 place-content-between   text-gray-700 text-white py-2 px-2 rounded inline-flex items-center`}
               >
@@ -543,7 +543,7 @@ export const MainDrive = ({
                       }}
                       onContextMenu={(e) => {
                         handleFolderContextMenu(e);
-                        setclickedfile(prev.folderId);
+                        setclickedfile({ fileId: prev.folderId, type: "Folder" });
                       }}
                       className="bg-gray-100  max-h-[50px] min-w-56  max-w-56 items-center flex p-4 rounded-xl  cursor-pointer hover:bg-gray-300 "
                     >
@@ -577,7 +577,7 @@ export const MainDrive = ({
                   <Box>
                     <div
                       onClick={() => {
-                        setclickedfile(prev.fileId);
+                        setclickedfile({fileId: prev.fileId, type: "File"});
                         openModalFile(
                           prev.fileId,
                           prev.fileExtension,
@@ -586,7 +586,7 @@ export const MainDrive = ({
                       }}
                       onContextMenu={(e) => {
                         handleContextMenu(e);
-                        setclickedfile(prev.fileId);
+                        setclickedfile({fileId: prev.fileId, type: "File"});
                       }}
                       className=" bg-gray-100  max-h-[60px] min-w-56 max-w-56 items-center flex p-4 rounded-xl  cursor-pointer  hover:bg-gray-300"
                       //   style={{ position: "relative" }}
@@ -681,11 +681,11 @@ export const MainDrive = ({
             }
           }}
           className={`${
-            permState === "Owner"
+            permState == "Owner"
                 ? "hover:bg-gray-400"
-                : permState === "Editor"
+                : permState == "Editor"
                 ? "hover:bg-blue-400"
-                : "bg-gray-300 cursor-not-allowed"
+                : "text-gray-300 cursor-not-allowed"
         } p-2 rounded-md flex gap-4 items-center`}
         >
           <CiEdit className="text-xl" />
@@ -698,11 +698,11 @@ export const MainDrive = ({
             }
           }}
           className={`${
-            permState === "Owner"
+            permState == "Owner"
                 ? "hover:bg-gray-400"
-                : permState === "Editor"
+                : permState == "Editor"
                 ? "hover:bg-blue-400"
-                : "bg-gray-300 cursor-not-allowed"
+                : "text-gray-300 cursor-not-allowed"
         } p-2 rounded-md flex gap-4 items-center`}
         >
           <CiShare2 className="text-xl" />
@@ -718,11 +718,11 @@ export const MainDrive = ({
             }
           }}
           className={`${
-            permState === "Owner"
+            permState == "Owner"
                 ? "hover:bg-gray-400"
-                : permState === "Editor"
+                : permState == "Editor"
                 ? "hover:bg-blue-400"
-                : "bg-gray-300 cursor-not-allowed"
+                : "text-gray-300 cursor-not-allowed"
         } p-2 rounded-md flex gap-4 items-center`}
         >
           <MdDeleteForever className="text-xl text-red-600" />
@@ -743,11 +743,11 @@ export const MainDrive = ({
             }
           }}
           className={`${
-            permState === "Owner"
+            permState == "Owner"
                 ? "hover:bg-gray-400"
-                : permState === "Editor"
+                : permState == "Editor"
                 ? "hover:bg-blue-400"
-                : "bg-gray-300 cursor-not-allowed"
+                : "text-gray-300 cursor-not-allowed"
         } p-2 rounded-md flex gap-4 items-center`}
         >
           <CiEdit className="text-xl" />
@@ -760,14 +760,14 @@ export const MainDrive = ({
             }
           }}
           className={`${
-            permState === "Owner"
+            permState == "Owner"
                 ? "hover:bg-gray-400"
-                : permState === "Editor"
+                : permState == "Editor"
                 ? "hover:bg-blue-400"
-                : "bg-gray-300 cursor-not-allowed"
+                : "text-gray-300 cursor-not-allowed"
         } p-2 rounded-md flex gap-4 items-center`}
         >
-          <CiShare2 className="text-xl" />
+          <CiShare2 className="text-xl " />
           <div>Sharing</div>
         </div>
         <hr class="my-1 h-0.5 border-t-1 bg-neutral-100 opacity-100 dark:opacity-90" />
@@ -778,15 +778,15 @@ export const MainDrive = ({
             }
           }}
           className={`${
-            permState === "Owner"
+            permState == "Owner"
                 ? "hover:bg-gray-400"
-                : permState === "Editor"
+                : permState == "Editor"
                 ? "hover:bg-blue-400"
-                : "bg-gray-300 cursor-not-allowed"
+                : "text-gray-300 cursor-not-allowed"
         } p-2 rounded-md flex gap-4 items-center`}
         >
-          <MdDeleteForever className="text-xl " />
-          <div> Delete Folder</div>
+          <MdDeleteForever className="text-xl text-red-600" />
+          <div className="text-red-600">Delete Folder</div>
         </div>
       </Rightclickmodal>
 
@@ -832,7 +832,7 @@ export const MainDrive = ({
             <div>Cancel</div>
           </div>
           <div
-            onClick={() => editfilename(clickedfile)}
+            onClick={() => editfilename(clickedfile.fileId)}
             className=" flex items-center mb-2 hover:bg-blue-700 rounded-lg cursor-pointer mt-2 gap-2 bg-blue-600 text-white px-2 py-1"
           >
             <div>Rename</div>
@@ -860,7 +860,7 @@ export const MainDrive = ({
             <div>Cancel</div>
           </div>
           <div
-            onClick={() => deletefile(clickedfile)}
+            onClick={() => deletefile(clickedfile.fileId)}
             className=" flex items-center mb-2 hover:bg-blue-700 rounded-lg cursor-pointer  gap-2 bg-blue-600 text-white px-2 py-1"
           >
             <div>Delete</div>
@@ -882,13 +882,13 @@ export const MainDrive = ({
         <div className="  mb-4">Continue?</div>
         <div className="flex-row-reverse flex gap-4 mt-2">
           <div
-            onClick={closedeletemodal}
+            onClick={closeDeleteFolderModal}
             className=" flex items-center mb-2 hover:bg-gray-100 rounded-lg cursor-pointer  gap-2 border-1 px-2 py-1"
           >
             <div>Cancel</div>
           </div>
           <div
-            onClick={() => deletefolder(clickedfile)}
+            onClick={() => deletefolder(clickedfile.fileId)}
             className=" flex items-center mb-2 hover:bg-blue-700 rounded-lg cursor-pointer  gap-2 bg-blue-600 text-white px-2 py-1"
           >
             <div>Delete</div>

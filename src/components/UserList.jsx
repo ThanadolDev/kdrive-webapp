@@ -54,16 +54,18 @@ export const UserList = ({ clickedfile }) => {
     setuserPermissionList(secondDataWithDetails);
   };
   useEffect(() => {
-    
+    console.log(clickedfile.fileId)
     fetchData();
   }, []);
 
   const handleUserSelect = async (selectedOption) => {
-    if (selectedOption && selectedOption[0].user_id) {
+    console.log(selectedOption)
+    if (selectedOption && selectedOption[0]?.user_id) {
       const res = await axios.post(`${pathurl}:7871/addPermission`, {
-        fileid: clickedfile,
+        fileid: clickedfile.fileId,
         type: "Viewer",
         userid: selectedOption[0].user_id,
+        filetype: clickedfile.type
       });
       console.log(res);
       // setSelectedUsers(selectedOption);
@@ -75,29 +77,31 @@ export const UserList = ({ clickedfile }) => {
 
   const handleChangeRole = async (selectedOption, usrId) => {
     const res = await axios.put(`${pathurl}:7871/editpermission`, {
-      fileid: clickedfile,
+      fileid: clickedfile.fileId,
       type: selectedOption,
       user_id: usrId,
+      filetype: clickedfile.type
     });
     console.log(res.data);
-    handleFetchUserPermission();
+    fetchData();
   };
 
   const handleRemoveRole = async (selectedOption, usrId) => {
     const res = await axios.put(`${pathurl}:7871/removepermission`, {
-      fileid: clickedfile,
+      fileid: clickedfile.fileId,
       // type: selectedOption,
       user_id: usrId,
+      filetype: clickedfile.type
     });
     console.log(res.data);
-    handleFetchUserPermission();
+    fetchData();
   };
 
   const handleFetchUserPermission = async () => {
     try {
       console.log(clickedfile);
       const res = await axios.post(`${pathurl}:7871/getfilepermission`, {
-        fileid: clickedfile,
+        fileid: clickedfile.fileId,
       });
       console.log(res.data);
       setuserPermissionList(res.data)
@@ -113,7 +117,7 @@ export const UserList = ({ clickedfile }) => {
   return (
     <div className="max-h-[550px] min-h-[300px] w-[500px]">
       <div className="mb-4">
-        {clickedfile}
+        {clickedfile.fileId}
         <Select
           components={animatedComponents}
           options={userList}
@@ -153,6 +157,8 @@ export const UserList = ({ clickedfile }) => {
                     </div>
                   </div>
                   <div className="">
+                  {user.fpm_type !== "Owner" && (
+                    <>
                     <Menu
                       menuButton={
                         <MenuButton className="flex gap-2 hover:bg-gray-200 items-center rounded-lg px-0.5 ">
@@ -161,6 +167,8 @@ export const UserList = ({ clickedfile }) => {
                       }
                       transition
                     >
+                    
+                      
                       <MenuItem
                         value="Viewer"
                         onClick={(e) => handleChangeRole(e.value, user.user_id)}
@@ -179,7 +187,10 @@ export const UserList = ({ clickedfile }) => {
                       >
                         Remove
                       </MenuItem>
+                      
                     </Menu>
+                    </>
+                      )}
                   </div>
                 </div>
               </div>
@@ -213,7 +224,7 @@ export const UserList = ({ clickedfile }) => {
                     <Menu
                       menuButton={
                         <MenuButton className="flex gap-2 hover:bg-gray-200 items-center rounded-lg px-0.5 ">
-                          Viewer <IoMdArrowDropdown />
+                          {user.fpm_type}  <IoMdArrowDropdown />
                         </MenuButton>
                       }
                       transition

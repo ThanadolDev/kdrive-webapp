@@ -9,6 +9,9 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { IoIosLogOut } from "react-icons/io";
 import axios from "axios";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
+import { NavSearchbar } from "./NavSearchbar";
 
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
@@ -39,17 +42,22 @@ export const Navbar = () => {
     contextMenuPosition,
   } = useStateContext();
 
-
   const username =
     localStorage.getItem("EMP_FNAME") + " " + localStorage.getItem("EMP_LNAME");
   const empid = localStorage.getItem("EMP_ID");
 
   const handleContextMenu = (event) => {
-    const keysToRemove = ["EMP_ID", "EMP_LNAME", "EMP_FNAME", "accessToken", "refreshToken", "ORG_ID"];
-    keysToRemove.forEach(key => localStorage.removeItem(key));
+    const keysToRemove = [
+      "EMP_ID",
+      "EMP_LNAME",
+      "EMP_FNAME",
+      "accessToken",
+      "refreshToken",
+      "ORG_ID",
+    ];
+    keysToRemove.forEach((key) => localStorage.removeItem(key));
     window.location.reload();
-};
-
+  };
 
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
@@ -69,21 +77,28 @@ export const Navbar = () => {
   }, [screenSize]);
   return (
     <div className="flex justify-between p-2  relative bg-white drop-shadow-sm w-full">
+      <div className="flex">
       <NavButton
         title="Menu"
         customFunc={() => setActiveMenu((preActiveMenu) => !preActiveMenu)}
         color="blue"
         icon={<AiOutlineMenu />}
       ></NavButton>
-
+      <div>
+        <NavSearchbar />
+     
+      </div>
+    </div>
+    
       <div className="flex   gap-2  items-center">
         <img
           src={`https://api.nitisakc.dev/avatar/${empid}`}
           alt=""
           className="w-[40px] h-[40px] rounded-full"
           onError={(e) => {
-            e.target.onerror = null; 
-            e.target.src = "https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain"; 
+            e.target.onerror = null;
+            e.target.src =
+              "https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain";
           }}
         />
         <div>{username}</div>
