@@ -16,8 +16,6 @@ export const FolderContents = ({fetchstate,shareStatus}) => {
   },[])
   return (
     <div>
-        {/* FolderContents */}
-        {/* <p>Folder ID: {shareStatus}</p> */}
         <MainDrive fetchstate={fetchstate} folderId={id} shareStatus={shareStatus}/>
     </div>
   )

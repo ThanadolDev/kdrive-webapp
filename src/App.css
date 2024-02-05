@@ -3,23 +3,30 @@
 .sidebar {
   box-shadow: rgb(113 122 131 / 11%) 0px 7px 30px 0px;
 }
+
 .nav-item,
 .navbar {
   z-index: 10000;
 }
-@media  screen and (max-width:800px) {
-  .sidebar{
-    z-index: 10000000;
+
+
+@media screen and (max-width:800px) {
+  .sidebar {
+    z-index: 1000;
   }
 }
+
 .dropdown:focus-within .dropdown-menu {
-  opacity:1;
+  opacity: 1;
   transform: translate(0) scale(1);
   visibility: visible;
 }
-.e-dlg-center-center, .e-quick-popup-wrapper.e-device{
-  z-index: 1000000 !important;
+
+.e-dlg-center-center,
+.e-quick-popup-wrapper.e-device {
+  z-index: 1000 !important;
 }
+
 .dropdown:hover .dropdown-menu {
   display: block;
 }
@@ -27,10 +34,12 @@
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-thumb {
   background-color: rgb(216, 216, 216);
   border-radius: 40px;
 }
+
 ::-webkit-scrollbar-track {
   background-color: transparent;
 }
@@ -38,10 +47,8 @@
 
 /* color-picker style  */
 
- #preview {
-  background: transparent
-    url('https://ej2.syncfusion.com/react/demos/src/color-picker/images/pen.png')
-    no-repeat;
+#preview {
+  background: transparent url('https://ej2.syncfusion.com/react/demos/src/color-picker/images/pen.png') no-repeat;
   display: inline-block;
   height: 80px;
   margin: 10px 0;
@@ -49,18 +56,29 @@
   max-width: 600px;
   background-color: #008000;
 }
+
 .grid {
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
 }
+
 .dnd-placeholder {
   /* Adjust background color, opacity, etc. as needed */
   background-color: rgba(255, 255, 255, 0.5);
 }
-.e-input-group:not(.e-float-icon-left), .e-input-group.e-success:not(.e-float-icon-left), .e-input-group.e-warning:not(.e-float-icon-left), .e-input-group.e-error:not(.e-float-icon-left), .e-input-group.e-control-wrapper:not(.e-float-icon-left), .e-input-group.e-control-wrapper.e-success:not(.e-float-icon-left), .e-input-group.e-control-wrapper.e-warning:not(.e-float-icon-left), .e-input-group.e-control-wrapper.e-error:not(.e-float-icon-left){
+
+.e-input-group:not(.e-float-icon-left),
+.e-input-group.e-success:not(.e-float-icon-left),
+.e-input-group.e-warning:not(.e-float-icon-left),
+.e-input-group.e-error:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper.e-success:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper.e-warning:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper.e-error:not(.e-float-icon-left) {
   border: none;
 }
+
 @import "../node_modules/@syncfusion/ej2-base/styles/material.css";
 @import '../node_modules/@syncfusion/ej2-buttons/styles/material.css';
 @import "../node_modules/@syncfusion/ej2-layouts/styles/material.css";

@@ -8,7 +8,7 @@ import { BrowserRouter, Routes, Route,Navigate, useParams } from "react-router-d
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { Button,Chartsheader,Footer,Header,Navbar,Sidebar,UserProfile,Modals } from "./components";
 import Alpine from 'alpinejs'
-import { MainDrive,FolderContents } from "./pages";
+import { MainDrive,FolderContents, SearchPage } from "./pages";
 import { useStateContext} from './contexts/ContextProvider'
 window.Alpine = Alpine
  
@@ -55,13 +55,14 @@ function App() {
           }
         >
           
-          <div className="fixed md:static bg-main-bg dark:bg-main-dark-bg navbar w-full">
+          <div className="fixed static bg-main-bg dark:bg-main-dark-bg navbar w-full">
             <Navbar />
           </div>
           
-          <div>
+          <div className="mt-20">
             <Routes>
               <Route path="/Drive" element={<MainDrive fetchstate={fetchstate} shareStatus={false}/>} />
+              <Route path="/Search" element={<SearchPage fetchstate={fetchstate} shareStatus={false}/>} />
               <Route path="/" element={<Navigate to="/Drive" replace />} />
               <Route path="/Folder/:id" element={<FolderContents fetchstate={fetchstate} fetchheader={fetchheader} />} />
               <Route path="/ShareDrive" element={<FolderContents fetchstate={fetchstate} fetchheader={fetchheader} shareStatus={true}/>}  />

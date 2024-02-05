@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Box } from "grommet";
+import { useLocation } from 'react-router-dom';
 import {
   Breadcrumb,
   Rightclickmodal,
@@ -45,6 +46,7 @@ export const MainDrive = ({
   folderId,
   fetchheader,
   shareStatus,
+  Urlquery
 }) => {
   const {
     activeMenu,
@@ -102,6 +104,8 @@ export const MainDrive = ({
   const [fetchError, setfetchError] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
 
   const onDrop = async (acceptedFiles) => {
 
@@ -273,17 +277,43 @@ export const MainDrive = ({
     }
   }
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  async function fetchSearchData(){
+    setfetchStatus(true);
+    try{
+      const Pdffilter = searchParams.get('pdf');
+      const imagefilter = searchParams.get('image')
+      const data = {
+        EMP_ID: localStorage.getItem("EMP_ID"),
+        Term: Urlquery,
+        Filter: {
+          Pdf: Pdffilter,
+          Image: imagefilter,
+        }
+      };
+      const respage = await axios(`${pathurl}:7871/Searchpage`,data)
+      console.log(respage.data)
+      setFileList(respage.data.folders);
+      setFolderList(respage.data.files);
+    }catch(e){
+      console.log(e)
+      // window.alert(e)
+    }
+    setfetchStatus(false);
+  }
+
 
   useEffect(() => {
+    if(Urlquery !== null){
+      fetchSearchData()
+    }else{
     fetchData();
     fetchShareData();
+    }
     if (folderId !== undefined) {
       setfolderState(true);
     }
-    console.log("fetching");
+    
+    console.log("fetching"+Urlquery);
   }, [fetchstate, folderId]);
 
   const handleContextMenu = (event) => {
@@ -422,7 +452,7 @@ export const MainDrive = ({
       console.log(e);
     }
   }
-  const containerClassName = `m-4 bg-white rounded-md overflow-auto h-[90vh] drop-shadow-sm ${
+  const containerClassName = `m-4 bg-white rounded-md overflow-auto h-[85vh] drop-shadow-sm ${
     isDragActive
       ? "m-4 border-dashed bg-blue-100 z-10  border-4 border-gray-300"
       : ""
@@ -441,7 +471,7 @@ export const MainDrive = ({
               <button
                 class={`${
                   permState != "Owner" && permState != "Editor"
-                    ? "text-gray-300 cursor-not-allowed"
+                    ? "text-gray-300 cursor-not-allowed bg-blue-600 hover:bg-blue-700"
                     : "bg-blue-600 hover:bg-blue-700"
                 }   w-32 place-content-between   text-gray-700 text-white py-2 px-2 rounded inline-flex items-center`}
               >

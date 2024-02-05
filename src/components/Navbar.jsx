@@ -75,6 +75,7 @@ export const Navbar = () => {
       setActiveMenu(true);
     }
   }, [screenSize]);
+
   return (
     <div className="flex justify-between p-2  relative bg-white drop-shadow-sm w-full">
       <div className="flex">
@@ -84,10 +85,10 @@ export const Navbar = () => {
         color="blue"
         icon={<AiOutlineMenu />}
       ></NavButton>
-      <div>
+   
         <NavSearchbar />
      
-      </div>
+ 
     </div>
     
       <div className="flex   gap-2  items-center">
