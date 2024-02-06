@@ -85,9 +85,9 @@ export const Navbar = () => {
         color="blue"
         icon={<AiOutlineMenu />}
       ></NavButton>
-   
-        <NavSearchbar />
-     
+      
+        <NavSearchbar  />
+    
  
     </div>
     

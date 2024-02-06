@@ -452,7 +452,7 @@ export const MainDrive = ({
       console.log(e);
     }
   }
-  const containerClassName = `m-4 bg-white rounded-md overflow-auto h-[85vh] drop-shadow-sm ${
+  const containerClassName = `m-4 bg-white rounded-md overflow-auto h-[85vh] md:static  ${
     isDragActive
       ? "m-4 border-dashed bg-blue-100 z-10  border-4 border-gray-300"
       : ""

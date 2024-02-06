@@ -55,11 +55,14 @@ function App() {
           }
         >
           
-          <div className="fixed static bg-main-bg dark:bg-main-dark-bg navbar w-full">
+          <div className=" bg-main-bg dark:bg-main-dark-bg navbar w-full">
             <Navbar />
           </div>
-          
-          <div className="mt-20">
+          {/* <div className={activeMenu ? "fixed static bg-main-bg dark:bg-main-dark-bg navbar w-[78%]" 
+          : "fixed static bg-main-bg dark:bg-main-dark-bg navbar w-full"}>
+            <Navbar />
+          </div> */}
+          <div className="">
             <Routes>
               <Route path="/Drive" element={<MainDrive fetchstate={fetchstate} shareStatus={false}/>} />
               <Route path="/Search" element={<SearchPage fetchstate={fetchstate} shareStatus={false}/>} />
