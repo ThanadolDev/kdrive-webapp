@@ -38,8 +38,8 @@ import "react-select-search/style.css";
 const pdfjs = require("pdfjs-dist");
 pdfjs.GlobalWorkerOptions.workerSrc = require("pdfjs-dist/build/pdf.worker.entry.js");
 
-// const pathurl = `http://localhost`;
-const pathurl = `http://192.168.55.37`;
+const pathurl = `http://localhost`;
+// const pathurl = `http://192.168.55.37`;
 
 export const MainDrive = ({
   fetchstate,
@@ -283,17 +283,13 @@ export const MainDrive = ({
       const Pdffilter = searchParams.get('pdf');
       const imagefilter = searchParams.get('image')
       const data = {
-        EMP_ID: localStorage.getItem("EMP_ID"),
+        usrid: localStorage.getItem("EMP_ID"),
         Term: Urlquery,
-        Filter: {
-          Pdf: Pdffilter,
-          Image: imagefilter,
-        }
       };
-      const respage = await axios(`${pathurl}:7871/Searchpage`,data)
+      const respage = await axios.post(`${pathurl}:7871/Searchpage`,data)
       console.log(respage.data)
-      setFileList(respage.data.folders);
-      setFolderList(respage.data.files);
+      setFileList(respage.data.files);
+      setFolderList(respage.data.folders);
     }catch(e){
       console.log(e)
       // window.alert(e)
@@ -303,7 +299,7 @@ export const MainDrive = ({
 
 
   useEffect(() => {
-    if(Urlquery !== null){
+    if(Urlquery !== undefined){
       fetchSearchData()
     }else{
     fetchData();
