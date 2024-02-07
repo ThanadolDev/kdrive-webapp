@@ -27,6 +27,7 @@ export const ContextProvider = ({ children }) => {
   const [currentParams, setcurrentParams] = useState();
   const [shareStatus, setshareStatus] = useState();
   const [permState, setpermState] = useState();
+  const [clickedfile, setclickedfile] = useState();
   const openModal = (file) => {
     setSelectedFile(file);
     setModalOpen(true);
@@ -170,7 +171,9 @@ export const ContextProvider = ({ children }) => {
         setshareStatus,
         shareStatus,
         setpermState,
-        permState
+        permState,
+        setclickedfile,
+        clickedfile
       }}
     >
       {children}

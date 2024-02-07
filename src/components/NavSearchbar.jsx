@@ -4,18 +4,33 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FaRegImages } from "react-icons/fa6";
 import { FaVideo } from "react-icons/fa";
 import { FaRegFilePdf } from "react-icons/fa6";
+import { useStateContext } from "../contexts/ContextProvider";
 import { IoFolderOutline } from "react-icons/io5";
-const pathurl = `http://localhost`;
-// const pathurl = `http://192.168.55.37`;
+import { Modals,Displayfile } from "../components";
+import { IoMdClose } from "react-icons/io";
+import { LuHardDriveDownload } from "react-icons/lu";
+import axios from "axios";
+// const pathurl = `http://localhost`;
+const pathurl = `http://192.168.55.37`;
 export const NavSearchbar = () => {
   const [activeSearch, setActiveSearch] = useState([]);
   const [isSearchClicked, setIsSearchClicked] = useState(false);
-  const timerRef = useRef(null);
+  // const [SelectedFile,setSelectedFile] = useState()
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const Urlquery = searchParams.get("query");
+
+  const {
+    clickedfile,
+    setclickedfile,
+    selectedFile,
+    setSelectedFile,
+    isModalOpen,
+    closeModal,
+    openModal
+  } = useStateContext();
 
   const handleSearch = (e) => {
     console.log(e.target);
@@ -25,6 +40,51 @@ export const NavSearchbar = () => {
     }
     setSearchTerm(e.target.value);
   };
+
+  async function openModalFile(fileId, fileExtension, fileName) {
+    openModal();
+    try {
+      const response = await axios.get(
+        `${pathurl}:7870/displayfile/${fileId}`,
+        { responseType: "arraybuffer" }
+      );
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"],
+      });
+      setSelectedFile({
+        blob: URL.createObjectURL(blob),
+        fileExtension: fileExtension,
+        fileName: fileName,
+        fileId: fileId,
+      });
+      console.log(selectedFile)
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function downloadfile() {
+    try {
+      const downloadLink = document.createElement("a");
+      downloadLink.href = `${pathurl}:7870/downloadfile/${clickedfile.fileId}`;
+
+      const newWindow = window.open("", "_blank");
+      newWindow.document.write(
+        "<html><head><title>Opening Link</title></head><body>Downloading"
+      );
+
+      newWindow.location.href = downloadLink.href;
+
+      setTimeout(() => {
+        newWindow.close();
+      }, 500);
+
+      newWindow.document.write("</body></html>");
+      newWindow.document.close();
+    } catch (e) {
+      console.error(e);
+    }
+  }
   const fetchData = async () => {
     const Pdffilter = searchParams.get("pdf");
     const imagefilter = searchParams.get("image");
@@ -58,7 +118,11 @@ export const NavSearchbar = () => {
   }, [searchTerm]);
 
   return (
-    <div className="md:w-[400px] w-[400px] relative">
+    <div
+      onFocus={() => setIsSearchClicked(true)}
+      onBlur={() => setIsSearchClicked(false)}
+      className="md:w-[400px] w-[400px] relative"
+    >
       <div className="relative">
         <div className="absolute left-3 top-1/2 -translate-y-1/2">
           <AiOutlineSearch />
@@ -67,8 +131,6 @@ export const NavSearchbar = () => {
           type="search"
           placeholder="Type Here"
           className="pl-8 w-full border-1 p-2 rounded-full"
-          onFocus={() => setIsSearchClicked(true)}
-          onBlur={() => setIsSearchClicked(false)}
           onChange={(e) => handleSearch(e)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -84,14 +146,16 @@ export const NavSearchbar = () => {
           {activeSearch?.folders?.length > 0 && (
             <>
               {activeSearch.folders.map((s) => (
-                <span
-                  key={s.folder_id}
+                <div
+                  key={s.folderId}
                   className="flex items-center gap-4 hover:bg-gray-200 p-4"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => navigate(`/Folder/${s.folderId}`)}
                 >
                   {/* <AiOutlineSearch /> */}
                   <IoFolderOutline />
                   <div>{s.folderName}</div>
-                </span>
+                </div>
               ))}
             </>
           )}
@@ -99,8 +163,17 @@ export const NavSearchbar = () => {
             <>
               {activeSearch.files.map((s) => (
                 <span
-                  key={s.file_id}
+                  key={s.fileId}
                   className="flex items-center gap-4 hover:bg-gray-200 p-4"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    setclickedfile({fileId: s.fileId, type: "File", Name: s.fileName});
+                    openModalFile(
+                      s.fileId,
+                      s.fileExtension,
+                      s.fileName
+                    );
+                  }}
                 >
                   <AiOutlineSearch />
                   <div>{s.fileName}</div>
@@ -164,6 +237,7 @@ export const NavSearchbar = () => {
           </div>
         </div>
       )}
+     
     </div>
   );
 };

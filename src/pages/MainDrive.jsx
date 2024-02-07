@@ -38,8 +38,8 @@ import "react-select-search/style.css";
 const pdfjs = require("pdfjs-dist");
 pdfjs.GlobalWorkerOptions.workerSrc = require("pdfjs-dist/build/pdf.worker.entry.js");
 
-const pathurl = `http://localhost`;
-// const pathurl = `http://192.168.55.37`;
+// const pathurl = `http://localhost`;
+const pathurl = `http://192.168.55.37`;
 
 export const MainDrive = ({
   fetchstate,
@@ -92,11 +92,13 @@ export const MainDrive = ({
     permissionModal,
     permState,
     setpermState,
+    clickedfile,
+    setclickedfile
   } = useStateContext();
 
   const [Filelist, setFileList] = useState();
   const [Folderlist, setFolderList] = useState();
-  const [clickedfile, setclickedfile] = useState();
+  // const [clickedfile, setclickedfile] = useState();
   const [fileName, setFileName] = useState("");
   const [folderName, setfolderName] = useState("");
   const [folderState, setfolderState] = useState(false);
