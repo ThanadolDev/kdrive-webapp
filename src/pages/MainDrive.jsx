@@ -310,7 +310,7 @@ export const MainDrive = ({
     }
     
     console.log("fetching"+Urlquery);
-  }, [fetchstate, folderId]);
+  }, [fetchstate, folderId, Urlquery]);
 
   const handleContextMenu = (event) => {
     event.preventDefault();
@@ -351,10 +351,17 @@ export const MainDrive = ({
 
   async function deletefolder(folderId) {
     try {
+      const res1 = await axios.put(`${pathurl}:7871/removepermission`, {
+        fileid: clickedfile.fileId,
+        // type: selectedOption,
+        user_id: localStorage.getItem("EMP_ID"),
+        filetype: clickedfile.type
+      });
       const res = await axios.delete(
         `${pathurl}:7871/deletefolder/${folderId}`
       );
       console.log(res);
+      
       closeDeleteFolderModal();
       fetchData();
     } catch (e) {
@@ -387,7 +394,7 @@ export const MainDrive = ({
   }
 
   async function editfoldername() {
-    if (!folderName.trim()) {
+    if (folderName === "") {
       console.log("Folder name cannot be empty");
       window.alert("Folder name can't be empty");
       return;
@@ -448,7 +455,7 @@ export const MainDrive = ({
       console.log(e);
     }
   }
-  const containerClassName = `m-4 bg-white rounded-md overflow-auto h-[85vh] md:static  ${
+  const containerClassName = `m-4 bg-white rounded-md overflow-auto h-[90vh] md:static  ${
     isDragActive
       ? "m-4 border-dashed bg-blue-100 z-10  border-4 border-gray-300"
       : ""
@@ -569,7 +576,7 @@ export const MainDrive = ({
                       }}
                       onContextMenu={(e) => {
                         handleFolderContextMenu(e);
-                        setclickedfile({ fileId: prev.folderId, type: "Folder" });
+                        setclickedfile({ fileId: prev.folderId, type: "Folder", Name: prev.folderName });
                       }}
                       className="bg-gray-100  max-h-[50px] min-w-56  max-w-56 items-center flex p-4 rounded-xl  cursor-pointer hover:bg-gray-300 "
                     >
@@ -603,7 +610,7 @@ export const MainDrive = ({
                   <Box>
                     <div
                       onClick={() => {
-                        setclickedfile({fileId: prev.fileId, type: "File"});
+                        setclickedfile({fileId: prev.fileId, type: "File", Name: prev.fileName});
                         openModalFile(
                           prev.fileId,
                           prev.fileExtension,
@@ -612,7 +619,7 @@ export const MainDrive = ({
                       }}
                       onContextMenu={(e) => {
                         handleContextMenu(e);
-                        setclickedfile({fileId: prev.fileId, type: "File"});
+                        setclickedfile({fileId: prev.fileId, type: "File", Name: prev.fileName});
                       }}
                       className=" bg-gray-100  max-h-[60px] min-w-56 max-w-56 items-center flex p-4 rounded-xl  cursor-pointer  hover:bg-gray-300"
                       //   style={{ position: "relative" }}
@@ -848,6 +855,7 @@ export const MainDrive = ({
             type="text"
             placeholder="Good files"
             onChange={(e) => setFileName(e.target.value)}
+            // value={clickedfile && clickedfile.Name}
           />
         </div>
         <div className="flex-row-reverse flex gap-4 mt-2">
@@ -973,6 +981,7 @@ export const MainDrive = ({
             type="text"
             placeholder="Good folder"
             onChange={(e) => setfolderName(e.target.value)}
+            // value={clickedfile && clickedfile.Name}
           />
         </div>
         <div className="flex-row-reverse flex gap-4 mt-2">

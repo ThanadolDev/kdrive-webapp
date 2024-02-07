@@ -66,7 +66,7 @@ export const Sidebar = ({ fetchheader }) => {
   const normalLink =
     "flex item-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-md   dark:hover:text-black hover:bg-gray-200 my-2";
   return (
-    <div className=" h-screen absolute w-full md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10 bg-white drop-shadow-sm">
+    <div className="h-screen  w-full md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10 bg-white drop-shadow-sm">
       {activeMenu && (
         <>
           <div className="flex justify-between items-center ml-2">

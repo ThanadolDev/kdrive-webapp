@@ -102,7 +102,7 @@ export const Navbar = () => {
               "https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain";
           }}
         />
-        <div>{username}</div>
+        <div className="min-w-24">{username}</div>
         <div
           className="hover:bg-gray-100 rounded-xl p-2 cursor-pointer flex gap-2 items-center"
           onClick={(e) => handleContextMenu(e)}

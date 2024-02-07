@@ -58,7 +58,7 @@ export const NavSearchbar = () => {
   }, [searchTerm]);
 
   return (
-    <div className="w-[400px]  relative">
+    <div className="md:w-[400px] w-[400px] relative">
       <div className="relative">
         <div className="absolute left-3 top-1/2 -translate-y-1/2">
           <AiOutlineSearch />
@@ -80,7 +80,7 @@ export const NavSearchbar = () => {
         />
       </div>
       {isSearchClicked && (
-        <div className="absolute bg-white p-4 w-full rounded-xl left-1/2 -translate-x-1/2 flex flex-col gap-2">
+        <div className="absolute bg-white p-4 w-full rounded-xl left-1/2 -translate-x-1/2 flex flex-col gap-2 drop-shadow-sm">
           {activeSearch?.folders?.length > 0 && (
             <>
               {activeSearch.folders.map((s) => (
