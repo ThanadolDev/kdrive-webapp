@@ -16,8 +16,8 @@ export const Breadcrumb = ({shareStatus}) => {
 
   return (
     <nav class="flex" aria-label="Breadcrumb">
-      <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-        <li class="inline-flex items-center">
+      <div class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+        <div class="inline-flex items-center">
           <div
           onClick={() => { 
             {permState == "Owner" ? navigate(`/Drive`) : navigate(`/ShareDrive`)}
@@ -37,13 +37,13 @@ export const Breadcrumb = ({shareStatus}) => {
             </svg>
             {permState == 'Owner' ? 'My Drive' : 'Share Drive'}
           </div>
-        </li>
-        <div className=" w-[500px] overflow-x-auto flex inline-flex ">
+        </div>
+        <div className=" max-w-[500px] md:w-[500px] overflow-x-auto flex inline-flex ">
           
         { folderhistory && folderhistory.map((prev) => 
         
           
-        <li>
+        <div>
           <div class="flex items-center">
            
             <div
@@ -74,7 +74,7 @@ export const Breadcrumb = ({shareStatus}) => {
               />
             </svg>
           </div>
-        </li>
+        </div>
         
 )}
 </div>
@@ -125,7 +125,7 @@ export const Breadcrumb = ({shareStatus}) => {
             </span>
           </div>
         </li> */}
-      </ol>
+      </div>
     </nav>
   );
 };

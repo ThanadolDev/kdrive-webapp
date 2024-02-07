@@ -6,7 +6,7 @@ import { FaVideo } from "react-icons/fa";
 import { FaRegFilePdf } from "react-icons/fa6";
 import { useStateContext } from "../contexts/ContextProvider";
 import { IoFolderOutline } from "react-icons/io5";
-import { Modals, Displayfile } from "../components";
+import { Modals, Displayfile,Checkfileicon } from "../components";
 import { IoMdClose } from "react-icons/io";
 import { LuHardDriveDownload } from "react-icons/lu";
 import axios from "axios";
@@ -14,7 +14,8 @@ import axios from "axios";
 const pathurl = `http://192.168.55.37`;
 export const NavSearchbar = () => {
   const [activeSearch, setActiveSearch] = useState([]);
-  const [isSearchClicked, setIsSearchClicked] = useState(false);
+  const [isSearchClicked, setIsSearchClicked] = useState(true);
+  const [searching, setsearching] = useState(false);
   // const [SelectedFile,setSelectedFile] = useState()
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
@@ -31,14 +32,22 @@ export const NavSearchbar = () => {
     closeModal,
     openModal,
   } = useStateContext();
+  let searchTimeout;
 
   const handleSearch = (e) => {
     console.log(e.target);
+    console.log(searching);
     if (e.target.value === "") {
       setActiveSearch([]);
       return false;
     }
-    setSearchTerm(e.target.value);
+    clearTimeout(searchTimeout);
+    setsearching(true);
+    searchTimeout = setTimeout(() => {
+      setSearchTerm(e.target.value);
+      setsearching(false);
+    }, 1000);
+    
   };
 
   async function openModalFile(fileId, fileExtension, fileName) {
@@ -121,7 +130,7 @@ export const NavSearchbar = () => {
     <div
       onFocus={() => setIsSearchClicked(true)}
       onBlur={() => setIsSearchClicked(false)}
-      className="md:w-[400px] w-[400px] relative"
+      className=" md:w-[300px] relative"
     >
       <div className="relative">
         <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -143,6 +152,13 @@ export const NavSearchbar = () => {
       </div>
       {isSearchClicked && (
         <div className="absolute bg-white p-4 w-full rounded-xl left-1/2 -translate-x-1/2 flex flex-col gap-2 drop-shadow-sm">
+          {searching && (
+            <div>
+              <span className="flex items-center gap-4 hover:bg-gray-200 p-4">
+                loading ...
+              </span>
+            </div>
+          )}
           {activeSearch?.folders?.length > 0 && (
             <>
               {activeSearch.folders.map((s) => (
@@ -179,14 +195,15 @@ export const NavSearchbar = () => {
                     setIsSearchClicked(false);
                   }}
                 >
-                  <AiOutlineSearch />
+                   <Checkfileicon fileExtension={s.fileExtension} />
                   <div>{s.fileName}</div>
                 </span>
               ))}
             </>
           )}
-
-          <div className="flex justify-between gap-4 p-4">
+          {activeSearch?.folders?.length === 0 || activeSearch?.folders?.length === 0  && <div>Not found</div>}
+          
+          {/* <div className="flex justify-between gap-4 p-4">
             <div>
               <input
                 type="checkbox"
@@ -238,7 +255,7 @@ export const NavSearchbar = () => {
                 </div>
               </label>
             </div>
-          </div>
+          </div> */}
         </div>
       )}
     </div>

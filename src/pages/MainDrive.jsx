@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Box } from "grommet";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import {
   Breadcrumb,
   Rightclickmodal,
@@ -46,7 +46,7 @@ export const MainDrive = ({
   folderId,
   fetchheader,
   shareStatus,
-  Urlquery
+  Urlquery,
 }) => {
   const {
     activeMenu,
@@ -93,7 +93,7 @@ export const MainDrive = ({
     permState,
     setpermState,
     clickedfile,
-    setclickedfile
+    setclickedfile,
   } = useStateContext();
 
   const [Filelist, setFileList] = useState();
@@ -110,7 +110,6 @@ export const MainDrive = ({
   const searchParams = new URLSearchParams(location.search);
 
   const onDrop = async (acceptedFiles) => {
-
     if (permState != "Owner" && permState != "Editor") {
       console.error("You don't have permission to do that");
       window.alert("You don't have permission to upload file in this folder");
@@ -279,39 +278,38 @@ export const MainDrive = ({
     }
   }
 
-  async function fetchSearchData(){
+  async function fetchSearchData() {
     setfetchStatus(true);
-    try{
-      const Pdffilter = searchParams.get('pdf');
-      const imagefilter = searchParams.get('image')
+    try {
+      const Pdffilter = searchParams.get("pdf");
+      const imagefilter = searchParams.get("image");
       const data = {
         usrid: localStorage.getItem("EMP_ID"),
         Term: Urlquery,
       };
-      const respage = await axios.post(`${pathurl}:7871/Searchpage`,data)
-      console.log(respage.data)
+      const respage = await axios.post(`${pathurl}:7871/Searchpage`, data);
+      console.log(respage.data);
       setFileList(respage.data.files);
       setFolderList(respage.data.folders);
-    }catch(e){
-      console.log(e)
+    } catch (e) {
+      console.log(e);
       // window.alert(e)
     }
     setfetchStatus(false);
   }
 
-
   useEffect(() => {
-    if(Urlquery !== undefined){
-      fetchSearchData()
-    }else{
-    fetchData();
-    fetchShareData();
+    if (Urlquery !== undefined) {
+      fetchSearchData();
+    } else {
+      fetchData();
+      fetchShareData();
     }
     if (folderId !== undefined) {
       setfolderState(true);
     }
-    
-    console.log("fetching"+Urlquery);
+
+    console.log("fetching" + Urlquery);
   }, [fetchstate, folderId, Urlquery]);
 
   const handleContextMenu = (event) => {
@@ -357,13 +355,13 @@ export const MainDrive = ({
         fileid: clickedfile.fileId,
         // type: selectedOption,
         user_id: localStorage.getItem("EMP_ID"),
-        filetype: clickedfile.type
+        filetype: clickedfile.type,
       });
       const res = await axios.delete(
         `${pathurl}:7871/deletefolder/${folderId}`
       );
       console.log(res);
-      
+
       closeDeleteFolderModal();
       fetchData();
     } catch (e) {
@@ -476,7 +474,7 @@ export const MainDrive = ({
               <button
                 class={`${
                   permState != "Owner" && permState != "Editor"
-                    ? "text-gray-300 cursor-not-allowed bg-blue-600 hover:bg-blue-700"
+                    ? "text-gray-300 cursor-not-allowed bg-gray-300 "
                     : "bg-blue-600 hover:bg-blue-700"
                 }   w-32 place-content-between   text-gray-700 text-white py-2 px-2 rounded inline-flex items-center`}
               >
@@ -578,13 +576,22 @@ export const MainDrive = ({
                       }}
                       onContextMenu={(e) => {
                         handleFolderContextMenu(e);
-                        setclickedfile({ fileId: prev.folderId, type: "Folder", Name: prev.folderName });
+                        setclickedfile({
+                          fileId: prev.folderId,
+                          type: "Folder",
+                          Name: prev.folderName,
+                        });
                       }}
-                      className="bg-gray-100  max-h-[50px] min-w-56  max-w-56 items-center flex p-4 rounded-xl  cursor-pointer hover:bg-gray-300 "
+                      className="bg-gray-100  max-h-[50px] w-72 sm:w-56 items-center flex p-4 rounded-xl  cursor-pointer hover:bg-gray-300 "
                     >
-                      <div className=" flex gap-2">
+                      <div className="w-full flex gap-2">
                         <CiFolderOn className="text-xl" />
-                        <div>{prev.folderName}</div>
+                        <div
+                          style={{ textOverflow: "ellipsis" }}
+                          className="w-full overflow-hidden text-ellipsis"
+                        >
+                          {prev.folderName}
+                        </div>
                       </div>
                     </div>
                     {/* <div
@@ -612,7 +619,11 @@ export const MainDrive = ({
                   <Box>
                     <div
                       onClick={() => {
-                        setclickedfile({fileId: prev.fileId, type: "File", Name: prev.fileName});
+                        setclickedfile({
+                          fileId: prev.fileId,
+                          type: "File",
+                          Name: prev.fileName,
+                        });
                         openModalFile(
                           prev.fileId,
                           prev.fileExtension,
@@ -621,20 +632,28 @@ export const MainDrive = ({
                       }}
                       onContextMenu={(e) => {
                         handleContextMenu(e);
-                        setclickedfile({fileId: prev.fileId, type: "File", Name: prev.fileName});
+                        setclickedfile({
+                          fileId: prev.fileId,
+                          type: "File",
+                          Name: prev.fileName,
+                        });
                       }}
-                      className=" bg-gray-100  max-h-[60px] min-w-56 max-w-56 items-center flex p-4 rounded-xl  cursor-pointer  hover:bg-gray-300"
+                      className=" bg-gray-100  max-h-[60px] w-72 sm:w-56 items-center flex p-4 rounded-xl  cursor-pointer  hover:bg-gray-300"
                       //   style={{ position: "relative" }}
                     >
                       {/* <FaFile className="mr-2" /> */}
-                      <div className="mr-2 text-xl">
-                        <Checkfileicon fileExtension={prev.fileExtension} />
-                      </div>
-                      <div
-                        className="overflow-hidden text-ellipsis"
-                        style={{ textOverflow: "ellipsis" }}
-                      >
-                        {prev.fileName}
+                      <div className="w-full flex gap-2">
+                        <Checkfileicon
+                          className="text-xl"
+                          fileExtension={prev.fileExtension}
+                        />
+
+                        <div
+                          className="overflow-hidden text-ellipsis w-full"
+                          style={{ textOverflow: "ellipsis" }}
+                        >
+                          {prev.fileName}
+                        </div>
                       </div>
                     </div>
                   </Box>
@@ -717,11 +736,11 @@ export const MainDrive = ({
           }}
           className={`${
             permState == "Owner"
-                ? "hover:bg-gray-400"
-                : permState == "Editor"
-                ? "hover:bg-blue-400"
-                : "text-gray-300 cursor-not-allowed"
-        } p-2 rounded-md flex gap-4 items-center`}
+              ? "hover:bg-gray-400"
+              : permState == "Editor"
+              ? "hover:bg-blue-400"
+              : "text-gray-300 cursor-not-allowed"
+          } p-2 rounded-md flex gap-4 items-center`}
         >
           <CiEdit className="text-xl" />
           <div>Edit File Name</div>
@@ -734,11 +753,11 @@ export const MainDrive = ({
           }}
           className={`${
             permState == "Owner"
-                ? "hover:bg-gray-400"
-                : permState == "Editor"
-                ? "hover:bg-blue-400"
-                : "text-gray-300 cursor-not-allowed"
-        } p-2 rounded-md flex gap-4 items-center`}
+              ? "hover:bg-gray-400"
+              : permState == "Editor"
+              ? "hover:bg-blue-400"
+              : "text-gray-300 cursor-not-allowed"
+          } p-2 rounded-md flex gap-4 items-center`}
         >
           <CiShare2 className="text-xl" />
           <div>Sharing</div>
@@ -754,14 +773,14 @@ export const MainDrive = ({
           }}
           className={`${
             permState == "Owner"
-                ? "hover:bg-gray-400"
-                : permState == "Editor"
-                ? "hover:bg-blue-400"
-                : "text-gray-300 cursor-not-allowed"
-        } p-2 rounded-md flex gap-4 items-center`}
+              ? "hover:bg-gray-400"
+              : permState == "Editor"
+              ? "hover:bg-blue-400"
+              : "text-gray-300 cursor-not-allowed"
+          } p-2 rounded-md flex gap-4 items-center`}
         >
-          <MdDeleteForever className="text-xl text-red-600" />
-          <div className="text-red-600"> Delete File</div>
+          <MdDeleteForever className="text-xl " />
+          <div className=""> Delete File</div>
         </div>
       </Rightclickmodal>
 
@@ -779,28 +798,28 @@ export const MainDrive = ({
           }}
           className={`${
             permState == "Owner"
-                ? "hover:bg-gray-400"
-                : permState == "Editor"
-                ? "hover:bg-blue-400"
-                : "text-gray-300 cursor-not-allowed"
-        } p-2 rounded-md flex gap-4 items-center`}
+              ? "hover:bg-gray-400"
+              : permState == "Editor"
+              ? "hover:bg-blue-400"
+              : "text-gray-300 cursor-not-allowed"
+          } p-2 rounded-md flex gap-4 items-center`}
         >
           <CiEdit className="text-xl" />
           <div className="">Edit Folder Name</div>
         </div>
         <div
           onClick={() => {
-            if (permState == "Owner"  || permState == "Editor") {
+            if (permState == "Owner" || permState == "Editor") {
               openpermissionModal();
             }
           }}
           className={`${
             permState == "Owner"
-                ? "hover:bg-gray-400"
-                : permState == "Editor"
-                ? "hover:bg-blue-400"
-                : "text-gray-300 cursor-not-allowed"
-        } p-2 rounded-md flex gap-4 items-center`}
+              ? "hover:bg-gray-400"
+              : permState == "Editor"
+              ? "hover:bg-blue-400"
+              : "text-gray-300 cursor-not-allowed"
+          } p-2 rounded-md flex gap-4 items-center`}
         >
           <CiShare2 className="text-xl " />
           <div>Sharing</div>
@@ -814,14 +833,14 @@ export const MainDrive = ({
           }}
           className={`${
             permState == "Owner"
-                ? "hover:bg-gray-400"
-                : permState == "Editor"
-                ? "hover:bg-blue-400"
-                : "text-gray-300 cursor-not-allowed"
-        } p-2 rounded-md flex gap-4 items-center`}
+              ? "hover:bg-gray-400"
+              : permState == "Editor"
+              ? "hover:bg-blue-400"
+              : "text-gray-300 cursor-not-allowed"
+          } p-2 rounded-md flex gap-4 items-center`}
         >
-          <MdDeleteForever className="text-xl text-red-600" />
-          <div className="text-red-600">Delete Folder</div>
+          <MdDeleteForever className="text-xl" />
+          <div className="">Delete Folder</div>
         </div>
       </Rightclickmodal>
 

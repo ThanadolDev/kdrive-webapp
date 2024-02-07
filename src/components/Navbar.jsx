@@ -77,40 +77,38 @@ export const Navbar = () => {
   }, [screenSize]);
 
   return (
-    <div className="flex justify-between p-2  relative bg-white drop-shadow-sm w-full">
-      <div className="flex">
+    <div className="flex justify-between p-2 relative bg-white drop-shadow-sm w-full">
+    <div className="flex items-center">
       <NavButton
         title="Menu"
         customFunc={() => setActiveMenu((preActiveMenu) => !preActiveMenu)}
         color="blue"
         icon={<AiOutlineMenu />}
       ></NavButton>
-      
-        <NavSearchbar  />
-    
- 
+      <NavSearchbar />
     </div>
     
-      <div className="flex   gap-2  items-center">
-        <img
-          src={`https://api.nitisakc.dev/avatar/${empid}`}
-          alt=""
-          className="w-[40px] h-[40px] rounded-full"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src =
-              "https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain";
-          }}
-        />
-        <div className="min-w-24">{username}</div>
-        <div
-          className="hover:bg-gray-100 rounded-xl p-2 cursor-pointer flex gap-2 items-center"
-          onClick={(e) => handleContextMenu(e)}
-        >
-          <IoIosLogOut className="text-xl text-blue-700 font-bold" />
-          <div className="font-bold text-blue-700">Logout</div>
-        </div>
+    <div className="flex items-center">
+      <img
+        src={`https://api.nitisakc.dev/avatar/${empid}`}
+        alt=""
+        className="w-[40px] h-[40px] rounded-full hidden sm:block"
+        onError={(e) => {
+          e.target.onerror = null;
+          e.target.src =
+            "https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain";
+        }}
+      />
+      <div className="min-w-24 hidden sm:block">{username}</div>
+      <div
+        className="hover:bg-gray-100 rounded-xl p-2 cursor-pointer flex gap-2 items-center"
+        onClick={(e) => handleContextMenu(e)}
+      >
+        <IoIosLogOut className="text-xl text-blue-700 font-bold" />
+        <div className="font-bold text-blue-700">Logout</div>
       </div>
     </div>
+  </div>
+  
   );
 };
