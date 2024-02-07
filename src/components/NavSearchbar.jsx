@@ -6,7 +6,7 @@ import { FaVideo } from "react-icons/fa";
 import { FaRegFilePdf } from "react-icons/fa6";
 import { useStateContext } from "../contexts/ContextProvider";
 import { IoFolderOutline } from "react-icons/io5";
-import { Modals,Displayfile } from "../components";
+import { Modals, Displayfile } from "../components";
 import { IoMdClose } from "react-icons/io";
 import { LuHardDriveDownload } from "react-icons/lu";
 import axios from "axios";
@@ -29,7 +29,7 @@ export const NavSearchbar = () => {
     setSelectedFile,
     isModalOpen,
     closeModal,
-    openModal
+    openModal,
   } = useStateContext();
 
   const handleSearch = (e) => {
@@ -57,7 +57,7 @@ export const NavSearchbar = () => {
         fileName: fileName,
         fileId: fileId,
       });
-      console.log(selectedFile)
+      console.log(selectedFile);
     } catch (e) {
       console.log(e);
     }
@@ -150,7 +150,10 @@ export const NavSearchbar = () => {
                   key={s.folderId}
                   className="flex items-center gap-4 hover:bg-gray-200 p-4"
                   onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => navigate(`/Folder/${s.folderId}`)}
+                  onClick={() => {
+                    navigate(`/Folder/${s.folderId}`);
+                    setIsSearchClicked(false);
+                  }}
                 >
                   {/* <AiOutlineSearch /> */}
                   <IoFolderOutline />
@@ -167,12 +170,13 @@ export const NavSearchbar = () => {
                   className="flex items-center gap-4 hover:bg-gray-200 p-4"
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => {
-                    setclickedfile({fileId: s.fileId, type: "File", Name: s.fileName});
-                    openModalFile(
-                      s.fileId,
-                      s.fileExtension,
-                      s.fileName
-                    );
+                    setclickedfile({
+                      fileId: s.fileId,
+                      type: "File",
+                      Name: s.fileName,
+                    });
+                    openModalFile(s.fileId, s.fileExtension, s.fileName);
+                    setIsSearchClicked(false);
                   }}
                 >
                   <AiOutlineSearch />
@@ -182,7 +186,7 @@ export const NavSearchbar = () => {
             </>
           )}
 
-          <div className="flex gap-4 p-4">
+          <div className="flex justify-between gap-4 p-4">
             <div>
               <input
                 type="checkbox"
@@ -237,7 +241,6 @@ export const NavSearchbar = () => {
           </div>
         </div>
       )}
-     
     </div>
   );
 };

@@ -136,7 +136,7 @@ export const Sidebar = ({ fetchheader }) => {
                 onClick={() => removeAllFolderHistory()}
               >
                 <SiProtondrive className="mt-0.5 text-xl text-blue-700" />
-                <span className="capitalize ">Drive</span>
+                <span className="capitalize ">My Drive</span>
               </NavLink>
               <NavLink
                 to={`/ShareDrive`}
