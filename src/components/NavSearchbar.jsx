@@ -4,17 +4,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FaRegImages } from "react-icons/fa6";
 import { FaVideo } from "react-icons/fa";
 import { FaRegFilePdf } from "react-icons/fa6";
+import { AiOutlineClose } from "react-icons/ai";
 import { useStateContext } from "../contexts/ContextProvider";
 import { IoFolderOutline } from "react-icons/io5";
-import { Modals, Displayfile,Checkfileicon } from "../components";
+import { Modals, Displayfile, Checkfileicon } from "../components";
 import { IoMdClose } from "react-icons/io";
 import { LuHardDriveDownload } from "react-icons/lu";
 import axios from "axios";
 // const pathurl = `http://localhost`;
 const pathurl = `http://192.168.55.37`;
-export const NavSearchbar = () => {
+export const NavSearchbar = ({setshowSearchBar}) => {
   const [activeSearch, setActiveSearch] = useState([]);
-  const [isSearchClicked, setIsSearchClicked] = useState(true);
+  const [isSearchClicked, setIsSearchClicked] = useState(false);
   const [searching, setsearching] = useState(false);
   // const [SelectedFile,setSelectedFile] = useState()
   const [searchTerm, setSearchTerm] = useState("");
@@ -47,7 +48,6 @@ export const NavSearchbar = () => {
       setSearchTerm(e.target.value);
       setsearching(false);
     }, 1000);
-    
   };
 
   async function openModalFile(fileId, fileExtension, fileName) {
@@ -127,83 +127,85 @@ export const NavSearchbar = () => {
   }, [searchTerm]);
 
   return (
-    <div
-      onFocus={() => setIsSearchClicked(true)}
-      onBlur={() => setIsSearchClicked(false)}
-      className=" md:w-[300px] relative"
-    >
-      <div className="relative">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2">
-          <AiOutlineSearch />
+    <>
+      <div
+        onFocus={() => setIsSearchClicked(true)}
+        onBlur={() => setIsSearchClicked(false)}
+        className=" w-[100%]  md:relative "
+      >
+        <div className="relative ">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2">
+            <AiOutlineSearch />
+          </div>
+          <input
+            type="search"
+            placeholder="Type Here"
+            className="pl-8 w-full border-1 p-2 rounded-full"
+            onChange={(e) => handleSearch(e)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSearch(e);
+                navigate(`/Search?query=${encodeURIComponent(searchTerm)}`);
+              }
+            }}
+          />
         </div>
-        <input
-          type="search"
-          placeholder="Type Here"
-          className="pl-8 w-full border-1 p-2 rounded-full"
-          onChange={(e) => handleSearch(e)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              handleSearch(e);
-              navigate(`/Search?query=${encodeURIComponent(searchTerm)}`);
-            }
-          }}
-        />
-      </div>
-      {isSearchClicked && (
-        <div className="absolute bg-white p-4 w-full rounded-xl left-1/2 -translate-x-1/2 flex flex-col gap-2 drop-shadow-sm">
-          {searching && (
-            <div>
-              <span className="flex items-center gap-4 hover:bg-gray-200 p-4">
-                loading ...
-              </span>
-            </div>
-          )}
-          {activeSearch?.folders?.length > 0 && (
-            <>
-              {activeSearch.folders.map((s) => (
-                <div
-                  key={s.folderId}
-                  className="flex items-center gap-4 hover:bg-gray-200 p-4"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => {
-                    navigate(`/Folder/${s.folderId}`);
-                    setIsSearchClicked(false);
-                  }}
-                >
-                  {/* <AiOutlineSearch /> */}
-                  <IoFolderOutline />
-                  <div>{s.folderName}</div>
-                </div>
-              ))}
-            </>
-          )}
-          {activeSearch?.files?.length > 0 && (
-            <>
-              {activeSearch.files.map((s) => (
-                <span
-                  key={s.fileId}
-                  className="flex items-center gap-4 hover:bg-gray-200 p-4"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => {
-                    setclickedfile({
-                      fileId: s.fileId,
-                      type: "File",
-                      Name: s.fileName,
-                    });
-                    openModalFile(s.fileId, s.fileExtension, s.fileName);
-                    setIsSearchClicked(false);
-                  }}
-                >
-                   <Checkfileicon fileExtension={s.fileExtension} />
-                  <div>{s.fileName}</div>
+        {isSearchClicked && (
+          <div className="absolute bg-white p-4 w-full rounded-xl left-1/2 -translate-x-1/2 flex flex-col gap-2 drop-shadow-sm">
+            {searching && (
+              <div>
+                <span className="flex items-center gap-4 hover:bg-gray-200 p-4">
+                  loading ...
                 </span>
-              ))}
-            </>
-          )}
-          {activeSearch?.folders?.length === 0 || activeSearch?.folders?.length === 0  && <div>Not found</div>}
-          
-          {/* <div className="flex justify-between gap-4 p-4">
+              </div>
+            )}
+            {activeSearch?.folders?.length > 0 && (
+              <>
+                {activeSearch.folders.map((s) => (
+                  <div
+                    key={s.folderId}
+                    className="flex items-center gap-4 hover:bg-gray-200 p-4"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      navigate(`/Folder/${s.folderId}`);
+                      setIsSearchClicked(false);
+                    }}
+                  >
+                    {/* <AiOutlineSearch /> */}
+                    <IoFolderOutline />
+                    <div>{s.folderName}</div>
+                  </div>
+                ))}
+              </>
+            )}
+            {activeSearch?.files?.length > 0 && (
+              <>
+                {activeSearch.files.map((s) => (
+                  <span
+                    key={s.fileId}
+                    className="flex items-center gap-4 hover:bg-gray-200 p-4"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      setclickedfile({
+                        fileId: s.fileId,
+                        type: "File",
+                        Name: s.fileName,
+                      });
+                      openModalFile(s.fileId, s.fileExtension, s.fileName);
+                      setIsSearchClicked(false);
+                    }}
+                  >
+                    <Checkfileicon fileExtension={s.fileExtension} />
+                    <div>{s.fileName}</div>
+                  </span>
+                ))}
+              </>
+            )}
+            {activeSearch?.folders?.length === 0 ||
+              (activeSearch?.folders?.length === 0 && <div>Not found</div>)}
+
+            {/* <div className="flex justify-between gap-4 p-4">
             <div>
               <input
                 type="checkbox"
@@ -256,8 +258,17 @@ export const NavSearchbar = () => {
               </label>
             </div>
           </div> */}
-        </div>
-      )}
-    </div>
+          </div>
+        )}
+      </div>
+      <div 
+      onClick={() => {
+        setIsSearchClicked(false)
+        setshowSearchBar(false)
+      }} 
+      className=" relative ml-4 mr-4 hover:bg-gray-100 p-2 rounded-full">
+        <AiOutlineClose className="text-xl cursor-pointer" />
+      </div>
+    </>
   );
 };

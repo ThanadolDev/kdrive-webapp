@@ -3,6 +3,7 @@ import { AioutlineMenu } from "react-icons/ai";
 import { FiShoppingCart } from "react-icons/fi";
 import { BsChatLeft } from "react-icons/ri";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { AiOutlineSearch } from "react-icons/ai";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { useStateContext } from "../contexts/ContextProvider";
 import { AiOutlineMenu } from "react-icons/ai";
@@ -31,6 +32,8 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
 );
 
 export const Navbar = () => {
+  const [showSearchBar, setshowSearchBar] = useState(false);
+
   const {
     activeMenu,
     setActiveMenu,
@@ -69,7 +72,7 @@ export const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    if (screenSize <= 900) {
+    if (screenSize <= 1000) {
       setActiveMenu(false);
     } else {
       setActiveMenu(true);
@@ -78,37 +81,41 @@ export const Navbar = () => {
 
   return (
     <div className="flex justify-between p-2 relative bg-white drop-shadow-sm w-full">
-    <div className="flex items-center">
-      <NavButton
-        title="Menu"
-        customFunc={() => setActiveMenu((preActiveMenu) => !preActiveMenu)}
-        color="blue"
-        icon={<AiOutlineMenu />}
-      ></NavButton>
-      <NavSearchbar />
-    </div>
-    
-    <div className="flex items-center">
-      <img
-        src={`https://api.nitisakc.dev/avatar/${empid}`}
-        alt=""
-        className="w-[40px] h-[40px] rounded-full hidden sm:block"
-        onError={(e) => {
-          e.target.onerror = null;
-          e.target.src =
-            "https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain";
-        }}
-      />
-      <div className="min-w-24 hidden sm:block">{username}</div>
-      <div
-        className="hover:bg-gray-100 rounded-xl p-2 cursor-pointer flex gap-2 items-center"
-        onClick={(e) => handleContextMenu(e)}
-      >
-        <IoIosLogOut className="text-xl text-blue-700 font-bold" />
-        <div className="font-bold text-blue-700">Logout</div>
+      <div className="flex items-center w-full  justify-between">
+        <NavButton
+          title="Menu"
+          customFunc={() => setActiveMenu((preActiveMenu) => !preActiveMenu)}
+          color="blue"
+          icon={<AiOutlineMenu />}
+        ></NavButton>
+        {showSearchBar ? (
+          <NavSearchbar setshowSearchBar={setshowSearchBar} />
+        ) : (
+          <div className="hover:bg-gray-100 p-2 mr-4 rounded-full cursor-pointer" onClick={() => setshowSearchBar(true)}> <AiOutlineSearch className="text-xl "/></div>
+        )}
+      </div>
+
+      <div style={{ textOverflow: "ellipsis"}} className="flex items-center gap-2 hidden md:flex md:min-w-24 ">
+        <img
+          src={`https://api.nitisakc.dev/avatar/${empid}`}
+          alt=""
+          
+          className="w-[40px] h-[40px] rounded-full "
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src =
+              "https://th.bing.com/th/id/OIP.DZ96fH-5g3OkZuMwb2Y5rgAAAA?rs=1&pid=ImgDetMain";
+          }}
+        />
+        {/* <div className=" ">{username}</div> */}
+        <div
+          className="hover:bg-gray-100 rounded-xl p-2 cursor-pointer flex gap-2 items-center"
+          onClick={(e) => handleContextMenu(e)}
+        >
+          <IoIosLogOut className="text-xl text-blue-700 font-bold hidden sm:block" />
+          {/* <div className="font-bold text-blue-700">Logout</div> */}
+        </div>
       </div>
     </div>
-  </div>
-  
   );
 };

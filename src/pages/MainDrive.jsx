@@ -109,6 +109,15 @@ export const MainDrive = ({
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
 
+  const handleFileType = async (file) => {
+    const disallowedFileTypes = ['application/x-msdownload'];
+    if (disallowedFileTypes.includes(file.type)) {
+      console.error("Error: Invalid file type.");
+      window.alert("Error: Invalid file type.");
+      return;
+    }
+  }
+
   const onDrop = async (acceptedFiles) => {
     if (permState != "Owner" && permState != "Editor") {
       console.error("You don't have permission to do that");
@@ -120,7 +129,9 @@ export const MainDrive = ({
       window.alert("Error: Only one file can be uploaded at a time.");
       return;
     }
-
+    acceptedFiles.forEach((file) => {
+      handleFileType(file); // Check file type before appending
+  });
     const formData = new FormData();
     acceptedFiles.forEach((file) => {
       console.log(file);
@@ -138,13 +149,14 @@ export const MainDrive = ({
       await axios.post(`${pathurl}:7871/uploadfiles`, FormDataDetail2);
       fetchData();
     } catch (error) {
-      console.error("Error uploading file: ", error);
-      window.alert(error);
+      console.error("Error uploading file: ", error.response.data);
+      window.alert(error.response.data);
     }
   };
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
+    handleFileType(file);
     const formData = new FormData();
     console.log(currentParams);
     formData.append("upload", file);
@@ -168,8 +180,8 @@ export const MainDrive = ({
       fetchData();
       console.log(response.data);
     } catch (error) {
-      console.error("Error uploading file: ", error);
-      window.alert(error);
+      console.error("Error uploading file: ", error.response.data);
+      window.alert(error.response.data);
       setUploadProgress(0);
     }
   };
@@ -563,7 +575,7 @@ export const MainDrive = ({
           {Folderlist && Folderlist.length >= 1 && (
             <div className="mb-2 font-bold">Folder</div>
           )}
-          <Box flex={true} wrap={true} direction="row" className="w-full gap-5">
+          <Box flex={true} wrap={true} direction="row" className="w-full gap-5 justify-center md:justify-start">
             {!fetchStatus &&
               Folderlist &&
               Folderlist.map((prev) => (
@@ -587,7 +599,7 @@ export const MainDrive = ({
                       <div className="w-full flex gap-2">
                         <CiFolderOn className="text-xl" />
                         <div
-                          style={{ textOverflow: "ellipsis" }}
+                           style={{ textOverflow: "ellipsis", whiteSpace: 'nowrap' }}
                           className="w-full overflow-hidden text-ellipsis"
                         >
                           {prev.folderName}
@@ -611,7 +623,7 @@ export const MainDrive = ({
             <div className="my-2 font-bold">Files</div>
           )}
 
-          <Box flex={true} wrap={true} direction="row" className="w-full gap-5">
+          <Box flex={true} wrap={true} direction="row" className="w-full gap-5 justify-center md:justify-start">
             {!fetchStatus &&
               Filelist &&
               Filelist.map((prev) => (
@@ -650,7 +662,7 @@ export const MainDrive = ({
 
                         <div
                           className="overflow-hidden text-ellipsis w-full"
-                          style={{ textOverflow: "ellipsis" }}
+                          style={{ textOverflow: "ellipsis", whiteSpace: 'nowrap' }}
                         >
                           {prev.fileName}
                         </div>
@@ -674,9 +686,9 @@ export const MainDrive = ({
         </div>
       </div>
       <Modals isOpen={isModalOpen} onClose={closeModal}>
-        <div className="place-content-between flex items-center">
+        <div  className="place-content-between flex items-center">
           {selectedFile && (
-            <div className="font-bold text-lg">{selectedFile.fileName}</div>
+            <div className="font-bold text-lg w-full overflow-hidden text-ellipsis " style={{ textOverflow: "ellipsis", whiteSpace: 'nowrap' }}>{selectedFile.fileName}</div>
           )}
           <div className="flex ">
             <div
