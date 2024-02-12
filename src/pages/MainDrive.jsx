@@ -9,7 +9,7 @@ import {
 } from "../components";
 import { MdNoteAdd } from "react-icons/md";
 import { Dummyfolder } from "../data/dummy";
-import { Modals, UserList } from "../components";
+import { Modals, UserList, MoveContent } from "../components";
 import { IoMdClose } from "react-icons/io";
 import { IoAddOutline } from "react-icons/io5";
 import { CiFolderOn } from "react-icons/ci";
@@ -94,6 +94,9 @@ export const MainDrive = ({
     setpermState,
     clickedfile,
     setclickedfile,
+    openMoveModal,
+    closeMoveModal,
+    moveContentModal,
   } = useStateContext();
 
   const [Filelist, setFileList] = useState();
@@ -1069,6 +1072,41 @@ export const MainDrive = ({
           </div>
         </div>
       </Modals>
+
+      <Modals isOpen={openMoveModal} onClose={closeMoveModal}>
+        <div className="place-content-between items-center flex mb-2">
+          <div className="mb-2 font-bold">Move content</div>
+          <div
+            onClick={closeMoveModal}
+            className="text-xl font-bold mb-2 hover:bg-gray-400 rounded-xl p-2"
+          >
+            <IoMdClose className="text-xl" />
+          </div>
+        </div>
+
+        <div class="w-full items-center  mb-6 md:mb-0"></div>
+        <div>
+          <div>
+            <MoveContent clickedfile={clickedfile} />
+          </div>
+        </div>
+
+        <div className="place-content-between flex gap-4 mt-2 items-center">
+          <div
+            onClick={closeMoveModal}
+            className=" flex items-center text-blue-600 mb-2 hover:bg-gray-200 rounded-full cursor-pointer  gap-2 bg-white border-1 px-2 py-2"
+          >
+           <div>Cancle</div>
+          </div>
+          <div
+            onClick={closeMoveModal}
+            className=" flex items-center mb-2 hover:bg-blue-700 rounded-lg cursor-pointer  gap-2 bg-blue-600 text-white px-2 py-1"
+          >
+            <div>Move</div>
+          </div>
+        </div>
+      </Modals>
+
     </>
   );
 };

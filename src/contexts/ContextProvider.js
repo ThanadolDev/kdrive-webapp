@@ -23,11 +23,14 @@ export const ContextProvider = ({ children }) => {
   const [rightClickFolderModal, setRightClickFolderModal] = useState(false);
   const [AddPlusModal, setAddPlusModal] = useState(false);
   const [deleteFolderModal, setdeleteFolderModal] = useState(false);
+  const [moveContentModal, setmoveContentModal] = useState(false);
   const [permissionModal, setpermissionModal] = useState(false);
   const [currentParams, setcurrentParams] = useState();
   const [shareStatus, setshareStatus] = useState();
   const [permState, setpermState] = useState();
   const [clickedfile, setclickedfile] = useState();
+  
+
   const openModal = (file) => {
     setSelectedFile(file);
     setModalOpen(true);
@@ -90,7 +93,12 @@ export const ContextProvider = ({ children }) => {
   const closepermissionModal = () => {
     setpermissionModal(false);
   };
-
+  const openMoveModal= () => {
+    setmoveContentModal(true);
+  };
+  const closeMoveModal = () => {
+    setmoveContentModal(false);
+  };
   const addfolderhistory = (foldername, folderId) => {
     const newFolder = { foldername, folderId };
     setfolderhistory((prevHistory) => [...prevHistory, newFolder]);
@@ -173,7 +181,10 @@ export const ContextProvider = ({ children }) => {
         setpermState,
         permState,
         setclickedfile,
-        clickedfile
+        clickedfile,
+        openMoveModal,
+        closeMoveModal,
+        moveContentModal
       }}
     >
       {children}
