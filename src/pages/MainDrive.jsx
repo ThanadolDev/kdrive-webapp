@@ -122,7 +122,7 @@ export const MainDrive = ({
   }
 
   const onDrop = async (acceptedFiles) => {
-    if (permState != "Owner" && permState != "Editor") {
+    if (permState != "OWNER" && permState != "Editor") {
       console.error("You don't have permission to do that");
       window.alert("You don't have permission to upload file in this folder");
       return;
@@ -214,7 +214,7 @@ export const MainDrive = ({
       };
       setFileList(fileResult.data);
       setFolderList(folderResult.data);
-      setpermState("Viewer");
+      setpermState("VIEWER");
       console.log("Files:", combinedData.folders);
     } catch (error) {
       setfetchError(true);
@@ -483,12 +483,12 @@ export const MainDrive = ({
           <div className="flex mb-8 ">
             <div
               class={`${
-                permState != "Owner" && permState != "Editor" ? "" : "dropdown"
+                permState != "OWNER" && permState != "Editor" ? "" : "dropdown"
               }  inline-block justify-center `}
             >
               <button
                 class={`${
-                  permState != "Owner" && permState != "Editor"
+                  permState != "OWNER" && permState != "Editor"
                     ? "text-gray-300 cursor-not-allowed bg-gray-300 "
                     : "bg-blue-600 hover:bg-blue-700"
                 }   w-32 place-content-between   text-gray-700 text-white py-2 px-2 rounded inline-flex items-center`}
@@ -745,12 +745,12 @@ export const MainDrive = ({
         </div>
         <div
           onClick={() => {
-            if (permState == "Owner" || permState == "Editor") {
+            if (permState == "OWNER" || permState == "Editor") {
               openeditModal();
             }
           }}
           className={`${
-            permState == "Owner"
+            permState == "OWNER"
               ? "hover:bg-gray-400"
               : permState == "Editor"
               ? "hover:bg-blue-400"
@@ -762,12 +762,12 @@ export const MainDrive = ({
         </div>
         <div
           onClick={() => {
-            if (permState == "Owner" || permState == "Editor") {
+            if (permState == "OWNER" || permState == "Editor") {
               openpermissionModal();
             }
           }}
           className={`${
-            permState == "Owner"
+            permState == "OWNER"
               ? "hover:bg-gray-400"
               : permState == "Editor"
               ? "hover:bg-blue-400"
@@ -782,12 +782,12 @@ export const MainDrive = ({
         />
         <div
           onClick={() => {
-            if (permState == "Owner" || permState == "Editor") {
+            if (permState == "OWNER" || permState == "Editor") {
               opendeleteModal();
             }
           }}
           className={`${
-            permState == "Owner"
+            permState == "OWNER"
               ? "hover:bg-gray-400"
               : permState == "Editor"
               ? "hover:bg-blue-400"
@@ -807,12 +807,12 @@ export const MainDrive = ({
       >
         <div
           onClick={() => {
-            if (permState == "Owner" || permState == "Editor") {
+            if (permState == "OWNER" || permState == "Editor") {
               openeditfolder();
             }
           }}
           className={`${
-            permState == "Owner"
+            permState == "OWNER"
               ? "hover:bg-gray-400"
               : permState == "Editor"
               ? "hover:bg-blue-400"
@@ -824,12 +824,12 @@ export const MainDrive = ({
         </div>
         <div
           onClick={() => {
-            if (permState == "Owner" || permState == "Editor") {
+            if (permState == "OWNER" || permState == "Editor") {
               openpermissionModal();
             }
           }}
           className={`${
-            permState == "Owner"
+            permState == "OWNER"
               ? "hover:bg-gray-400"
               : permState == "Editor"
               ? "hover:bg-blue-400"
@@ -842,12 +842,12 @@ export const MainDrive = ({
         <hr class="my-1 h-0.5 border-t-1 bg-neutral-100 opacity-100 dark:opacity-90" />
         <div
           onClick={() => {
-            if (permState == "Owner" || permState == "Editor") {
+            if (permState == "OWNER" || permState == "Editor") {
               openDeleteFolderModal();
             }
           }}
           className={`${
-            permState == "Owner"
+            permState == "OWNER"
               ? "hover:bg-gray-400"
               : permState == "Editor"
               ? "hover:bg-blue-400"

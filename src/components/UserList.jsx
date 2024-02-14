@@ -63,7 +63,7 @@ export const UserList = ({ clickedfile }) => {
     if (selectedOption && selectedOption[0]?.user_id) {
       const res = await axios.post(`${pathurl}:7871/addPermission`, {
         fileid: clickedfile.fileId,
-        type: "Viewer",
+        type: "VIEWER",
         userid: selectedOption[0].user_id,
         filetype: clickedfile.type
       });
@@ -157,7 +157,7 @@ export const UserList = ({ clickedfile }) => {
                     </div>
                   </div>
                   <div className="">
-                  {user.fpm_type !== "Owner" && (
+                  {user.fpm_type !== "OWNER" && (
                     <>
                     <Menu
                       menuButton={
@@ -170,7 +170,7 @@ export const UserList = ({ clickedfile }) => {
                     
                       
                       <MenuItem
-                        value="Viewer"
+                        value="VIEWER"
                         onClick={(e) => handleChangeRole(e.value, user.user_id)}
                       >
                         Viewer
@@ -230,7 +230,7 @@ export const UserList = ({ clickedfile }) => {
                       transition
                     >
                       <MenuItem
-                        value="Viewer"
+                        value="VIEWER"
                         onClick={(e) => handleChangeRole(e.value, user.user_id)}
                       >
                         Viewer
